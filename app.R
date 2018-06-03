@@ -6,7 +6,7 @@ library(ggplot2)
 library(htmltools)
 library(bsplus)
 
-# seperate normal distribution
+# separate normal distribution
 # calculate the environmental benefits, health benenfits. 
 #reactive?
 
@@ -29,74 +29,104 @@ ui <-  dashboardPage(
             fluidPage(h3("Model Overview"),
                       box(width = 12, h4("Introduction"),p("This is a tool meant to help Community Choice Energy Agencies predict the costs and benefits associated with offering a financing to install solar PV")
                       ),
-                      box(width = 12, h4("Using the Toolkit"),p("To use this model, at a minimum, users will need to enter values into the Primary Inputs section of the Toolkit tab. This section includes: [NEED TO BE FILLED] There are a variety of additional inputs that allow users to users add further program specifications as appropriate. A detailed breakdown of all available input options is included in the User Guide tab.")
+                      box(width = 12, h4("Using the Toolkit"),p("To use this model, at a minimum, users will need to enter values into the Primary Inputs section of the Toolkit tab. This section includes: Agency (region), % of electricity sales as net revenue, energy mix data, customer electricity rates, and electricity usage. There are a variety of additional inputs that allow users to users add further program specifications as appropriate. A detailed breakdown of all available input options is included in the User Guide tab.")
                       ),
-                      box(width = 12, h4("Results"), p("Once the user has filled in the appropriate inputs and run the model, results will be displayed on the right-hand side of the Toolkit tab. The main results show the predicted solar PV uptakes caused by solar financing program. These results show the total number of solar financing offered, and the predicted solar PV uptakes caused by the financing program. The model then displays predicted health, greenhouse gas, and monetary impacts associated with the financing program. ")
+                      box(width = 12, h4("Results"), p("Once the user has filled in the appropriate inputs and run the model, results will be displayed on the righthand side of the Toolkit tab. The main results show the predicted solar PV uptake caused by solar financing program. These results show the total number of solar financing loans offered, and the predicted solar PV uptake caused by the financing program. The model then displays predicted health, environmental, and monetary impacts associated with the financing program. ")
                       ))) , 
     tabItem(tabName = "tab_2",
             fluidPage(h3("User Guide"),
                       box( width = 12, h4("Primary Inputs"),p("These inputs represent the minimum amount of information necessary to run the model. They are:"), 
                            br(),tags$div(tags$ul(tags$li("Agency (Region): Which CCE Agency will be running the program. The model uses this) information to set the correct population level and predict local emissions impacts."), 
-                                                 tags$li("Total Incentives Budget: The total available budget for providing EV and PHEV incentives."),
-                                                 tags$li("Year: The year that the incentives program will run."),
-                                                 tags$li("Electric Vehicle (BEV) Incentive: The dollar amount that the agency will offer for each electric vehicle purchase."), 
-                                                 tags$li("Plug-in Hybrid (PHEV) Incentive: The dollar amount that the agency will offer for each plug-in hybrid purchase."), 
-                                                 tags$li("Energy mix: These values specify the composition of the energy mix that is used to charge electric vehicles."),  style = "font-size: 13px"))),    box( width = 12, h4("Incentive Details"),p("These allow agencies to add further details to their incentive offerings. These are included with general default values that can be altered if necessary to match the agency’s needs."), br(),tags$div(tags$ul(tags$li("Include incentive for High end BEV and luxury PHEV: These are Yes/No inputs set at No by default. If switched to Yes, the model will include Tesla and luxury plug-in hybrid vehicles among those that receive their respective incentives."), 
-                                                                                                                                                                                                                                                                                                                                                                       tags$li("Federal Tax Credit Availability/Clean Vehicle Rebate Project Availability: These are Yes/No inputs set at Yes by default. If switched to No the model will remove that credit or rebate from its calculations of vehicle cost."), 
-                                                                                                                                                                                                                                                         tags$li("Additional Discount EV/Plug-in: These inputs give the user the option to add additional discounts on the cost of BEVs or PHEVs. These are not included in the agency’s overall program costs and may represent discounts offered by vehicle dealers or manufacturers. They benefit the customer but are not costs incurred by the agency.")),  style = "font-size: 13px")),
-                      box( width = 12, h4("Program Details"), p("These allow the user to add details about their program, including administrative costs and program length. Defaults are provided based on the pilot incentive program that Sonoma Clean Power ran in 2016. Inputs include:"), br(), tags$div(tags$ul(tags$li("Program length: The number of months that the incentive program will run, with the default set at 12."), tags$li("Number of staff required: The number of full-time employees needed to run the program."), tags$li("Administrative costs per person: The salary and administrative costs per full time employee working on the program."), tags$li("Additional implementation costs: Any additional costs to run the program that the user anticipates. Defaults have been set based on the costs to run Sonoma Clean Power’s pilot EV program."),tags$li("Percent Net Revenue: This input allows the user to set the portion of electricity sales that goes to revenues with a default set at 10%."), tags$li("Marketing effectiveness: This input represents a way to account for the role of marketing on influencing program effectiveness. The user may input the percentage of  eligible customers they expect will be aware of the program being offered. This percentage directly modifies the predicted number of rebates redeemed. Because this only modifies the number of people aware of available discounts, it does not take into account marketing that changes the likelihood of customers taking advantage of the discounts (i.e. marketing that is more or less persuasive).", footer = NULL, status = NULL,solidHeader = FALSE, background = NULL, height = NULL, collapsible = FALSE, collapsed = FALSE)),  style = "font-size: 13px")
+                                                 tags$li("Electricity rate data: These inputs are used to calculate the foregone revenue from CCE agency electricity sales to agency customers who will now be getting electricity generated from their solar panels instead."),
+                                                 tags$li("Transmission losses (%): the average percentage of electricity supplied by the CCE agency that is lost during transmission."),
+                                                 tags$li("These values specify the composition of the energy mix to calculate the greenhouse gas emissions that are avoided when electricity is sourced from the homeowner’s solar panels rather than agency supply."),  style = "font-size: 13px"))),    
+                      box( width = 12, h4("Program Details"),p("These inputs are the program design parameters required from the user that the tool will use to evaluate the program. We suggest that the user multiple different program designs by varying the parameter values and running the tool module when comparing which programs to implement.
+"), 
+                           br(),tags$div(tags$ul(tags$li("Total budget available for loans ($)"),
+                                                 tags$li("Program costs ($/year)"),
+                                                 tags$li("Revenue percentage from electricity sales (%)"),
+                                                 tags$li("Agency’s discount rate (%)"),
+                                                 tags$li("Agency program financing interest rate (%)"),
+                                                 tags$li("Financing payback period (years)"),
+                                                 tags$li("NEM generator payments ($/kWh)"),
+                                                 tags$li("Average percentage of bill that is net generation (%)"),
+                                                 tags$li("% of solar buyers using program"),  style = "font-size: 13px"))),
+                      box( width = 12, h4("Optional Inputs"), p("The toolkit provides advanced customizability through additional inputs. These inputs have pre-set default values that can be left as is, if the user so desires. Inputs include:"), 
+                           br(), tags$div(tags$ul(tags$li("Expected default rate (%)"), 
+                                                  tags$li("Rebound effect (%)"), 
+                                                  tags$li("Customer’s discount rate (%)"), 
+                                                  tags$li("Carbon value ($/ton CO2e)"),
+                                                  tags$li("Health impact level"), 
+                                                  tags$li("PV average capacity factor"),
+                                                  tags$li("PV average operations & maintenance cost ($/kW/yr)"),
+                                                  tags$li("Average existing (non-CCE) financing interest rate (%)"),
+                                                  tags$li("Local rebates ($/kW)"),
+                                                  tags$li("Percentage of accounts that qualify for local rebates (%)", 
+                                                          footer = NULL, status = NULL,solidHeader = FALSE, background = NULL, height = NULL, collapsible = FALSE, collapsed = FALSE)),  style = "font-size: 13px")
                       ))), 
     tabItem(tabName ="tab_3",
             fluidPage(
-              titlePanel("Insert all the inputs first, calibrate, and then go to the next tab to get results"),
+              titlePanel("1) Set all inputs in BLUE boxes first. 2) Click Calibrate. 3)Modify Calibration main inputs until calibrated. 4) Go to next tab to get results"),
           
               fluidRow(
-                column(6,box(title = "Calibration main inputs", width=NULL, status = "success", solidHeader = TRUE, collapsible = TRUE, 
-                   selectInput( inputId="Agency", "Agency (region)", choices = list("Apple Valley" = "Apple Valley", "San Francisco" = "San Francisco", "Lancaster" = "Lancaster", "MCE" ="MCE", "Peninsular"="Peninsular", "Redwood Coast"="Redwood Coast", "Sillcon Valley"="Sillcon Valley", "Sonoma"="Sonoma"), selected = "MCE")%>% shinyInput_label_embed(
-                  shiny_iconlink() %>%
-                    bs_embed_tooltip(title = "Agency (Region): Which CCE Agency will be running the program. The model uses this information to set the correct population level and predict local emissions impacts.",  placement = "right")), 
-                  numericInput(inputId ="PerceivedOwn", "Perceived cost per month for owning solar PV($)", value = 103)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                  numericInput(inputId ="Perceived3rd", "Perceived cost per month for owning 3rd party owned solar PV ($)", value = 96)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "Fill this later",  placement = "right"))
+                column(6,box(title = "Calibration main inputs", width=NULL, status = "success", solidHeader = TRUE, collapsible = TRUE,
+                             p("Review the results in the Calibration box after you click Calibrate. To calibrate, increase/decrease each perceived cost such that the difference between the Actual Marketshare and Estimated Marketshare are within 0.02 for every category: CCA, PVOwn, 3rdOwn. This is a trial-and-error process, and may take 5-10 tries to achieve adequate calibration."),p(" For future use without calibration, remember these perceived costs values."),br(),
+                             selectInput(inputId="Agency", "Agency (region)",
+                                         choices = list("Apple Valley Choice Energy" = "Apple Valley", "Clean Power SF" = "San Francisco", "Lancaster Choice Energy" = "Lancaster", "MCE Clean Energy" ="MCE", "Peninsula Clean Energy"="Peninsula", "Redwood Coast Energy Authority"="Redwood Coast", "Silicon Valley Clean Energy"="Silicon Valley", "Sonoma Clean Power"="Sonoma"), selected = "MCE")%>%
+                               shinyInput_label_embed(
+                                 shiny_iconlink() %>%
+                                   bs_embed_tooltip(
+                                     title = "Which CCE agency will be running the program. The model uses this information to set the correct population level and determine the number of suitable homes for solar PV installation.
+                                     ", placement = "right")), 
+                  numericInput(inputId ="PerceivedOwn", "Perceived cost per month for owning solar PV($)", value = 120)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "If Actual Marketshare of PVOwn is higher than Estimated Marketshare decrease this value by several units.",  placement = "right")),
+                  numericInput(inputId ="Perceived3rd", "Perceived cost per month for owning 3rd party owned solar PV ($)", value = 126)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "If Actual Marketshare of 3rdOwn is higher than Estimated Marketshare decrease this value by several units.",  placement = "right"))
                   
-                  )),column(6,box(title = "Calibration", width=NULL, status = "success", solidHeader = TRUE, collapsible = TRUE,p("Change the perceived costs on the left side until the actual and estimated market shares are matched! Set the perceived costs and click [Calibrate]"),br(),p("If Actual makrket is higher than Estimated one, decrease the perceived cost. When each differences are below 0.01, it is good to go. For the future use without calibration, save perceived costs you find.") , actionButton("go2", "Calibrate"),br(),tableOutput("table3")
+                  )),column(6,box(title = "Calibration", width=NULL, status = "success", solidHeader = TRUE, collapsible = TRUE,p("Once you have clicked Calibrate, WAIT 10-30 seconds for results to appear at the bottom of this box. Your goal is to get the CCA Actual Marketshare and CCA Estimated Marketshare to match within 0.02 of each other."),p("If CCA Actual Marketshare is HIGHER than Estimated, DECREASE the perceived cost of Perceived cost of owning solar and/or Perceived cost of 3rd party owned solar. If CCA Actual Marketshare is LOWER than Estimated, INCREASE the perceived costs."),p("When the difference between the Actual Marketshare and Estimated Marketshare are within 0.02 for every category, you are good to go. Proceed to Toolkit-Results tab.") , actionButton("go2", "Calibrate"),br(),tableOutput("table3")
                                   
                                   ))), 
               fluidRow(
               column(3,
                      box(title = "CCE Agency Basic Information Inputs",width=NULL, status = "primary", solidHeader = TRUE, collapsible = TRUE, 
-                     numericInput(inputId ="rev_perc", "Percentage of electricity sales received as revenue(%)", value = 10)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                    numericInput(inputId ="Trans", "Transmission Losses (%)", value = 5)%>% shinyInput_label_embed(
+                     numericInput(inputId ="rev_perc", "Percentage of electricity sales received as revenue(%)", value = 10)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "The % revenue from electricity sales that results in net revenue",  placement = "right")),
+                    numericInput(inputId ="Trans", "Transmission Losses (%)", value = 4.2)%>% shinyInput_label_embed(
                       shiny_iconlink() %>%
-                        bs_embed_tooltip(title = "Fill this later",  placement = "right"))),
+                        bs_embed_tooltip(title = "This input accounts for electricity losses during transmission from the electricity source to the vehicle. The default value is set at 5%, representing the US average transmission losses, according to the EIA.",  placement = "right"))),
                     box(title = "Rate Data Inputs", width=NULL, status = "primary", solidHeader = TRUE, collapsible = TRUE,
                 numericInput(inputId ="Escal", "Agency electricity cost escalation rate (%/year)",  value = 2)%>% shinyInput_label_embed(
                     shiny_iconlink() %>%
-                      bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                  numericInput(inputId ="Elec1", "Average electricity rate - most popular rate schedule ($/kWh)",  value = 0.238)%>% shinyInput_label_embed(shiny_iconlink() %>% bs_embed_tooltip(title = "Fill this later",  placement = "right")),
+                      bs_embed_tooltip(title = "the expected increase in electricity rates to customers each year",  placement = "right")),
+                  numericInput(inputId ="Elec1", "Average electricity rate - most popular rate schedule ($/kWh)",  value = 0.238)%>% shinyInput_label_embed(shiny_iconlink() %>% bs_embed_tooltip(title = "the average electricity rate charged to regular customers on their monthly bill",  placement = "right")),
                   
-                 numericInput(inputId ="Elec1_perc", "  Percentage of accounts on above rate schedule, non-CARE (%)",  value = 68)%>% shinyInput_label_embed(shiny_iconlink() %>%bs_embed_tooltip(title = "Fill this later",  placement = "right")),
+                 numericInput(inputId ="Elec1_perc", "  Percentage of accounts on above rate schedule, non-CARE (%)",  value = 68)%>% shinyInput_label_embed(shiny_iconlink() %>%bs_embed_tooltip(title = "the percentage of your agency’s customers who are typical customers on the above rate and are not in the CARE program",  placement = "right")),
                  
-                  numericInput(inputId ="Elec2", "Average CARE electricity rate ($/kWh)",  value = 0.140),
+                  numericInput(inputId ="Elec2", "Average CARE electricity rate ($/kWh)",  value = 0.140)%>%
+                  shinyInput_label_embed(
+                    shiny_iconlink() %>%
+                      bs_embed_tooltip(
+                        title = "the average adjusted electricity rate charged to customers in the CARE program", placement = "right")),
                  
-                  numericInput(inputId ="Elec2_perc", " Percentage of accounts on CARE (%)",  value = 28),
+                  numericInput(inputId ="Elec2_perc", " Percentage of accounts on CARE (%)",  value = 28)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = " the percentage of your agency’s customers who are in the CARE program",  placement = "right")),
                   
-                  numericInput(inputId ="Elec3", "Average electricity rate - other rate schedules ($/kWh)",  value = 0.199),
-                  numericInput(inputId ="Elec3_perc", "   Percentage of accounts on other rate schedules (%)",  value = 4),
-                  numericInput(inputId ="Elec4", "Price premium for greener electricity ($)",  value = 0.010),
-                  numericInput(inputId ="Elec4_perc", "   Percentage of accounts purchasing greener electricity (%)",  value = 1))),
+                  numericInput(inputId ="Elec3", "Average electricity rate - other rate schedules ($/kWh)",  value = 0.199)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = " the percentage of your agency’s customers who are in the CARE program",  placement = "right")),
+                  numericInput(inputId ="Elec3_perc", "   Percentage of accounts on other rate schedules (%)",  value = 4)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "the percentage of your agency’s customers who are not in the aforementioned categories",  placement = "right")),
+                  numericInput(inputId ="Elec4", "Price premium for greener electricity ($)",  value = 0.010)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "the additional cost charged to consumers on getting electricity from greener mixes than the standard one offered by the agency",  placement = "right")),
+                  numericInput(inputId ="Elec4_perc", "   Percentage of accounts purchasing greener electricity (%)",  value = 1)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "the percentage of your agency’s customers who are purchasing greener electricity than the baseline agency offering",  placement = "right")),
+                numericInput(inputId ="Avg_non", "Average electricity usage - non-CARE, non-green (kWh/month)",  value = 574 )%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "Average electricity consumption per month of non-CARE non-green customers",  placement = "right")),
+                numericInput(inputId ="Avg_CARE_non_green", "Average electricity usage - CARE, non-green (kWh/month)",  value = 339)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "Average electricity consumption per month of CARE non-green customers",  placement = "right")),
+                numericInput(inputId ="Avg_non_CARE_green", "Average electricity usage - non-CARE, green (kWh/month)",  value = 387)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "Average electricity consumption per month of non-CARE green customers",  placement = "right")),
+                numericInput(inputId ="Avg_CARE_green", "Average electricity usage - CARE, green (kWh/month)",  value = 294)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "Average electricity consumption per month of CARE green customers",  placement = "right"))
+                )),
                  
               
               column(3, 
                      box(title = "Energy Mix Data Inputs", width=NULL, status = "primary", solidHeader = TRUE, collapsible = TRUE,
                   
-                  numericInput(inputId ="mix6","Energy Mix - Biomass (%)", value = 5),       
+                  numericInput(inputId ="mix6","Energy Mix - Biomass (%)", value = 5)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "these values specify the composition of the agency’s energy mix that supplies agency customers’ electricity",  placement = "right")),       
                   numericInput(inputId ="mix7", "Energy Mix - Biogas (%)", 
                                value = 0),
                   numericInput(inputId ="mix3","Energy Mix - Geothermal (%)", value = 0),
                   numericInput(inputId ="mix8", "Energy Mix - Eligible Renewable (%)", value = 50),
-                  numericInput(inputId ="mix1", "Energy Mix - Coal (%)", value = 0)%>% shinyInput_label_embed(
-                    shiny_iconlink() %>%
-                      bs_embed_tooltip(title = "Fill this later",  placement = "right")),
+                  numericInput(inputId ="mix1", "Energy Mix - Coal (%)", value = 0),
                   numericInput(inputId ="mix5","Energy Mix - Large Hydro (%)", value = 13),
                   numericInput(inputId ="mix2", "Energy Mix - Natural Gas (%)", value = 12),
                   numericInput(inputId ="mix9","Energy Mix - Nuclear (%)", 
@@ -104,85 +134,76 @@ ui <-  dashboardPage(
                   numericInput(inputId ="mix4","Energy Mix - Petroleum (%)", value = 0),
                   numericInput(inputId ="mix10", "Energy Mix - Unspecified (%)", value = 20)
                   ),
+                  
                   box(title = "CCE PV Financing Program Basic Inputs", width=NULL, status = "primary", solidHeader = TRUE, collapsible = TRUE, 
                        numericInput(inputId ="ProgramCost", "Program administrative costs per year ($/year)", value = 200000)%>% shinyInput_label_embed(shiny_iconlink() %>%  bs_embed_tooltip(title = "Program cost : program costs generally includes all administrative and implementation costs for the program except for loan provided.",  placement = "right")),
                       numericInput(inputId ="Budget", "Total budget available for loans ($)", value = 20000000)%>% shinyInput_label_embed(
                         shiny_iconlink() %>%
                           bs_embed_tooltip(title = "Budget : Total available budgets to provide loans for solar PV installation",  placement = "right")),
-                      sliderInput(inputId ="Marketing", "Percentage of solar buyers using program (%)", min = 0, max = 100, value = 10),
-                      numericInput(inputId ="DefaultOwn", "Expected default rate (%)", value = 5)%>% shinyInput_label_embed(
+                      sliderInput(inputId ="Marketing", "Marketing Efectiveness (%)", min = 0, max = 100, value = 10)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "This input represents a way to account for the role of marketing on influencing program effectiveness. The user may input the percentage of eligible customers they expect will be aware of the program being offered. This percentage directly modifies the predicted number of loans offered and resulting solar uptake. Because this only modifies the number of people aware of the financing program, it does not take into account marketing that changes the likelihood of customers taking advantage of the discounts (i.e. marketing that is more or less persuasive). Recommended realistic input is between 5-10%.",  placement = "right")),
+                      
+                      
+                      numericInput(inputId ="Carbon_p", "Carbon Value ($/ton CO2e)", value = 13)%>% shinyInput_label_embed(
                         shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
+                          bs_embed_tooltip(title = "The monetary value given to an avoided ton of CO2e emissions. The default value is set at $13/ton, based on the 2016 California market trading rate for CO2.",  placement = "right")),
+                      selectInput(inputId="Impact", "Value of Health Impact Estimates", choices = list("Low","Mid","High"), selected = "Mid")%>%
+                        shinyInput_label_embed(shiny_iconlink() %>%
+                                                 bs_embed_tooltip(title = "the relative monetary value (low, med, high)  that the agency places on emissions from electricity production (based on energy mix) that are avoided when solar PV is used",  placement = "right")),
+                      
+                      numericInput(inputId ="DefaultOwn", "Expected default rate (%)", value = 0)%>% shinyInput_label_embed(
+                        shiny_iconlink() %>%
+                          bs_embed_tooltip(title = "the % of financing program participants that you expect will default on their loans",  placement = "right")),
                         numericInput(inputId ="Rebound", "Rebound Effect (%)", value = 3)%>% shinyInput_label_embed(
                           shiny_iconlink() %>%
-                            bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                        numericInput(inputId ="Discount", "Agency discount rate (%)", value = 5)%>% shinyInput_label_embed(
+                            bs_embed_tooltip(title = "The rebound effect describes the tendency for individuals to increase their electricity consumption once they switch to using solar panels. Input a value estimate for the % increase in average electricity consumption after solar panels are installed. Leave as 3% default if you are unsure.",  placement = "right")),
+                        numericInput(inputId ="ADiscount", "Agency discount rate (%)", value = 2.5)%>% shinyInput_label_embed(
                           shiny_iconlink() %>%
-                            bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-              numericInput(inputId ="C_Discount", "Customers' discount rate (%)", value = 5)%>% shinyInput_label_embed(
+                            bs_embed_tooltip(title = "The annual rate at which future costs and benefits are devalued by the agency. The default value is set at 2.5%.",  placement = "right")),
+              numericInput(inputId ="CDiscount", "Customers' discount rate (%)", value = 6)%>% shinyInput_label_embed(
                 shiny_iconlink() %>%
-                  bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-              numericInput(inputId ="CarbonV", "Carbon Value ($/ton CO2e)", value = 13)%>% shinyInput_label_embed(
+                  bs_embed_tooltip(title = "The annual rate at which future costs and benefits are devalued by the average customer. The default value is set at 6%.",  placement = "right")),
+              numericInput(inputId ="SDiscount", "Societal goods discount rate (%)", value = 5)%>% shinyInput_label_embed(
                 shiny_iconlink() %>%
-                  bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-              selectInput(inputId="Impact", "Value of Health Impact Estimates", choices = list("Low","Mid","High"), selected = "Mid")%>%
-                        shinyInput_label_embed(shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right"))
+                  bs_embed_tooltip(title = "The annual rate at which future costs and benefits are devalued by the society. (Used to calculate heatlh and environmental costs/benefits that impact the society.) The default value is set at 2.5%.",  placement = "right"))
                       )),
-              
               
               column(3, 
                      box(title = "Customer-Owned Solar PV Inputs", width=NULL, status = "primary", solidHeader = TRUE, collapsible = TRUE, 
-                     numericInput(inputId ="CapFactrOwn", "[PV-own] Average capacity factor (%)", value = 20)%>% shinyInput_label_embed(
-                           shiny_iconlink() %>%
-                             bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                     numericInput(inputId ="FixedOwn", "[PV-own] Average operation & maintenance costs-fixed ($/kW/year)", value = 20)%>% shinyInput_label_embed(shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
                   
-                      numericInput(inputId ="NonCCEOwn", "[PV-own] Existing (non-CCE) financing interest rate (%)", value = 7.9)%>% 
+                      numericInput(inputId ="NonCCEOwn", " Existing (non-CCE) financing interest rate (%)", value = 7.9)%>% 
                       shinyInput_label_embed(
                         shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                      numericInput(inputId ="CCEOwn", "[PV-own] CCE agency program financing interest rate (%)", value = 6)%>% shinyInput_label_embed(
+                          bs_embed_tooltip(title = "The average financing interest rates that solar buyers can currently get on the market without the CCE agency financing program.",  placement = "right")),
+                      numericInput(inputId ="CCEOwn", " CCE agency program financing interest rate (%)", value = 6)%>% shinyInput_label_embed(
                         shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                      numericInput(inputId ="PayPeriodOwn", "[PV-own] Financing payback period (years)", value = 20)%>% shinyInput_label_embed(
+                          bs_embed_tooltip(title = "the financing interest rate that the agency would like to offer to their customers",  placement = "right")),
+                      numericInput(inputId ="PayPeriodOwn", " Financing payback period (years)", value = 20)%>% shinyInput_label_embed(
                         shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                      numericInput(inputId ="RebateOwn", "[PV-own] Local rebates ($/W)", value = 0)%>% shinyInput_label_embed(
+                          bs_embed_tooltip(title = "the length of time given to the financing customer to pay back their loan plus interest",  placement = "right")),
+                      numericInput(inputId ="RebateOwn", " Local rebates ($/W)", value = 0.5)%>% shinyInput_label_embed(
                         shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                      numericInput(inputId ="PercRebateOwn", "[PV-own] Percentage of accounts that can access local rebates (%)", value = 0)%>% shinyInput_label_embed(
-                        shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                      numericInput(inputId ="BonusOwn", "[PV-own] NEM generator payments ($/kWh)", value = 0.01),
-                      numericInput(inputId ="PercGenOwn", "[PV-own] Average percentage of bill that is net generation (%)", value = 99.4))),
+                          bs_embed_tooltip(title = "any local PV rebates available to customers within the agency region",  placement = "right")),
+                      numericInput(inputId ="PercRebateOwn", " Percentage of agency customer accounts with access to local rebates (%)", value = 0),
+                      
+                      selectInput(inputId="Flat_OAS", " NEM rate credited", choices = list("Flat rate","OAS"), selected = "Flat rate"),
+                      numericInput(inputId ="Flat_rate", "Rate credited if Flat rate is chosen ($/kWh)", value = 0.06)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = " the rate at which money is credited back to the PV system owners who participate in NEM",  placement = "right")),
+                      numericInput(inputId ="BonusOwn", "NEM bonus payments if OAS is chosen ($/kWh)", value = 0.01)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = " the rate at which money is credited back to the PV system owners who participate in NEM",  placement = "right")),
+                      selectInput(inputId="Price_P", "Credit greener product customers with a price premium?", choices = list("Yes","No"), selected = "Yes"),
+                      numericInput(inputId ="Lifetime", "Average solar PV panel lifetime (years)", value = 25),
+                      numericInput(inputId ="CapFactrOwn", " Average capacity factor (%)", value = 20),
+                      numericInput(inputId ="FixedOwn", " Average fixed operation & maintenance costs ($/kW/year)", value = 20),
+                      numericInput(inputId ="PercGenOwn", " Average percentage of bill that is net generation (%)", value = 99.4)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "the % of electricity of a homeowner’s bill that is generated by the PV system in excess of the electricity used. (For example, if a homeowner’s PV system produced 105% of the homeowner’s monthly usage, then the net generation is 5%)",  placement = "right"))
+                     )),
                       
               
               column(width=3, box(title = "3rd Party-Owned Solar PV Inputs", width=NULL, status = "primary", solidHeader = TRUE, collapsible = TRUE, 
-                  
-                      numericInput(inputId ="CapFactr3rd", "[3rd-own] Average capacity factor (%)", value = 20)%>% shinyInput_label_embed(
+                  numericInput(inputId ="NonCCE3rd", " Existing (non-CCE) financing interest rate (%)", value = 9)%>% shinyInput_label_embed(
                         shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                      numericInput(inputId ="Fixed3rd", "[3rd-own] Average operations & maintenance cost - fixed ($/kW/year)", value = 20)%>% shinyInput_label_embed(
+                          bs_embed_tooltip(title = " the average financing interest rates that solar buyers can currently get on the market without the CCE agency financing program.",  placement = "right")),
+                      numericInput(inputId ="PayPeriod3rd", " Financing payback period (years)", value = 20)%>% shinyInput_label_embed(
                         shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                    
-                      numericInput(inputId ="NonCCE3rd", "[3rd-own] Existing (non-CCE) financing interest rate (%)", value = 9)%>% shinyInput_label_embed(
-                        shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                      numericInput(inputId ="PayPeriod3rd", "[3rd-own] Financing payback period (years)", value = 20)%>% shinyInput_label_embed(
-                        shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                      numericInput(inputId ="Rebate3rd", "[3rd-own] Local rebates ($/W)", value = 0)%>% shinyInput_label_embed(
-                        shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                      numericInput(inputId ="PercRebate3rd", "[3rd-own] Percentage of accounts that can access local rebates (%)", value = 0)%>% shinyInput_label_embed(
-                        shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right")),
-                      numericInput(inputId ="PercGen3rd", "[3rd-own] Average percentage of bill that is net generation (%)", value = 0)%>% shinyInput_label_embed(
-                        shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "Fill this later",  placement = "right"))))
+                          bs_embed_tooltip(title = "the length of time given to the financing customer to pay back their loan plus interest",  placement = "right"))
+                      ))
                   
          
                 
@@ -221,7 +242,13 @@ server <- function(input, output) {
       Elec3_perc <- input$Elec3_perc
       Elec4 <- input$Elec4
       Elec4_perc <- input$Elec4_perc
-      Discount <- input$Discount
+      Avg_non <- input$Avg_non
+      Avg_CARE_non_green <- input$Avg_CARE_non_green
+      Avg_non_CARE_green <- input$Avg_non_CARE_green
+      Avg_CARE_green <- input$Avg_CARE_green
+      
+      
+      CDiscount <- input$CDiscount
       
       CapFactrOwn <-input$CapFactrOwn  
       FixedOwn <- input$FixedOwn
@@ -234,37 +261,56 @@ server <- function(input, output) {
       PercGenOwn <- input$PercGenOwn
       Marketing <- input$Marketing 
       DefaultOwn <- input$DefaultOwn
-      CapFactr3rd <- input$CapFactr3rd  
-      Fixed3rd <- input$Fixed3rd
       NonCCE3rd <- input$NonCCE3rd
       PayPeriod3rd <- input$PayPeriod3rd
-      Rebate3rd <- input$Rebate3rd
-      PercRebate3rd <- input$PercRebate3rd 
-      Bonus3rd <- input$Bonus3rd 
-      PercGen3rd <- input$PercGen3rd
+
+      
+      Flat_OAS <- input$Flat_OAS
+      Flat_rate <- input$Flat_rate
+      BonusOwn <- input$BonusOwn
+      Price_P <- input$Price_P
       
       CCEOwn_SD <- 0.2
       NonCCE3rd_SD <- 0.2
-      Lifetime <- 25
+      Lifetime <- input$Lifetime
       
       Av_elec <- read_csv("Average_elec.csv")
       PVcost <- read_csv("PV_cost.csv")
       Marketshare_List <- read_csv("Marketshare.csv")
-      N = 100000 # Number of simulation
+      N = 10000 # Number of simulation
       
       ##########################################################################
       # MODEL(BASE)
       
-      Mean_elec <- as.numeric(Av_elec[match(agency,Av_elec$Agency),2]) # Mean value of electricity consumption by agency
-      ln_Mean_elec <- log(Mean_elec)
-      SD_elec <- 0.4543209 # Standard deviation of Ln(electricity)
-      Elec <- exp(rnorm(n=N,mean=ln_Mean_elec, sd=SD_elec)) # Calulate electricity distribution from normally distributed ln(elec consumption)
-      Elec[Elec>3000]=3000 # Electricity consumption that is larger than 3,000 is 3,000
+      SD_elec <- 0.4 # Standard deviation of Ln(electricity)
+      other_non_green <- round((Elec3_perc)/100*(1-Elec4_perc/100)*N,digits=0)
+      common_green <- round((Elec1_perc)/100*Elec4_perc/100*N,digits=0)
+      other_green <- round((Elec3_perc)/100*Elec4_perc/100*N,digits=0)
+      Care_green <- round(Elec2_perc/100*Elec4_perc/100*N,digits=0)
+      Care_non_green <-round(Elec2_perc/100*(1-Elec4_perc/100)*N,digits=0)
+      common_non_green <- N-other_non_green-common_green-other_green-Care_green-Care_non_green
+      
+      ln_Mean_elec1<- log(Avg_non) 
+      ln_Mean_elec2<- log(Avg_CARE_non_green) 
+      ln_Mean_elec3<- log(Avg_non_CARE_green) 
+      ln_Mean_elec4<- log(Avg_CARE_green) 
+      
+      Elec_dis1 <- exp(rnorm(n=common_non_green,mean=ln_Mean_elec1, sd=SD_elec))
+      Elec_dis2 <- exp(rnorm(n=other_non_green,mean=ln_Mean_elec1, sd=SD_elec))
+      Elec_dis3 <- exp(rnorm(n=Care_non_green,mean=ln_Mean_elec2, sd=SD_elec))
+      Elec_dis4 <- exp(rnorm(n=common_green,mean=ln_Mean_elec3, sd=SD_elec))
+      Elec_dis5 <- exp(rnorm(n=other_green,mean=ln_Mean_elec3, sd=SD_elec))
+      Elec_dis6 <- exp(rnorm(n=Care_green,mean=ln_Mean_elec4, sd=SD_elec))
+      
+      Elec_distribution <- c(Elec_dis1,Elec_dis2,Elec_dis3,Elec_dis4,Elec_dis5,Elec_dis6)
+      
+      Elec_distribution[Elec_distribution>3000]=3000 # Electricity consumption that is larger than 3,000 is 3,000
+      
       # these are the values we use and subject to change
       Data_matrix <- matrix(rep(NA,N*27),nrow=N, ncol=27)
       colnames(Data_matrix)<- c("1.Electricity Usage(Kwh/month)","2.PV Generation(kWh/month)","3.System Size(kW)", "4.Rounded Size (kW)", "5.PV cost per kW","6.PV unit cost with noise","7.Old interest","8.3rd interest", "9.Energy Cost(CCA)","10.Energy Cost(Old)","11.Energy Cost(3rd)","12.Annual O&M cost(Own)","13.Annual O&M cost(3rd)","14.NEM(Own & 3rd)", "15.None", "16.Perceived Cost(Own)","17.Perceived Cost(3rd)","18.CCE interest", "19.Final CCA interest", "20.Capital Cost","21.Energy Cost(Own)","22.Base-total cost(CCA)", "23.Base-total cost(Own)", "24.Base-total cost(3rd)", "25.Base choices", "26.CCE-total cost","27.CCE choices")
       
-      Data_matrix[,1] <- Elec # add the electricity consumption distribution in the first column
+      Data_matrix[,1] <- Elec_distribution # add the electricity consumption distribution in the first column
       PV_Gen_ln_mean <- log(PercGenOwn/100)
       PV_Gen_distribution <- (-(exp(rnorm(n=N,mean=PV_Gen_ln_mean, sd=0.1))-1)+1)
       Data_matrix[,2] <- Data_matrix[,1]*PV_Gen_distribution 
@@ -273,35 +319,36 @@ server <- function(input, output) {
       Data_matrix[,4] <- round(Data_matrix[,3], digits=0) # round PV size
       PV_table <- subset(PVcost, select=agency)
       for (i in 1:N) {
-        Data_matrix[i,5] = ifelse(Data_matrix[i,4]>20, 3000, ifelse(Data_matrix[i,4]<1, 6000,as.numeric(PV_table[match(Data_matrix[i,4],PVcost$Size),1])))} # Pick the PV cost based on agency and PV size, and add in 5th col. 
-      Data_matrix[,6] <- Data_matrix[,5]*rnorm(n=N,mean=1,sd=CCEOwn_SD) # add noisy because the PV cost per kw can be different across PV companies. In the excel, the column 5 and 6 are combined. 
+        Data_matrix[i,5] = ifelse(Data_matrix[i,4]>20, 3000, ifelse(Data_matrix[i,4]<1, 6000,as.numeric(PV_table[match(Data_matrix[i,4],PVcost$Size),1])))} # Pick the PV cost based on agency and PV size, and add in 5th col.
+      Rebate_dis <- as.numeric(sample(c(1,0),N,prob=c(PercRebateOwn/100,1-PercRebateOwn/100),replace=TRUE))*-1000*RebateOwn
+      
+      Data_matrix[,6] <- Data_matrix[,5]*rnorm(n=N,mean=1,sd=CCEOwn_SD)+Rebate_dis # add noisy because the PV cost per kw can be different across PV companies, and add rebate distribution In the excel, the column 5 and 6 are combined
+      
       Data_matrix[,7] <- rnorm(n=N, mean=NonCCEOwn, sd=NonCCEOwn*CCEOwn_SD)/100 # old interest rate. 
       Data_matrix[,8] <- Data_matrix[,7]+(NonCCE3rd-NonCCEOwn)/100 # 3rd party own interest rate
-      Rate_table <- matrix(c(Elec1,Elec2,Elec3, Elec1_perc/100, Elec2_perc/100, Elec3_perc/100), nrow=3, ncol=2) # make electricity rate table based on the inputs
-      elec_rate <- as.numeric(sample(as.character(unlist(Rate_table[,1])),N, prob=as.character(unlist(Rate_table[,2])),replace=TRUE)) 
-      # sample CCA rate based on the probability
+      
+      elec_rate <- c(rep(Elec1,common_non_green),rep(Elec3,other_non_green),rep(Elec2,Care_non_green),rep(Elec1+Elec4,common_green),rep(Elec3+Elec4,other_green),rep(Elec2+Elec4,Care_green))
+      
+      
       Data_matrix[,9] <- Data_matrix[,1]*elec_rate # add monthly energy cost when getting electricity from CCA
       Data_matrix[,20]<- Data_matrix[,3]*Data_matrix[,6]# solar PV capital cost
       Data_matrix[,10]<-(-pmt(Data_matrix[,7]/12, PayPeriodOwn*12,Data_matrix[,20])) # add monthly energy cost when owning PV (Own)
       Data_matrix[,11]<- (-pmt(Data_matrix[,8]/12, PayPeriod3rd*12, Data_matrix[,20])) # add monthly energy cost when owning PV (3rd)
-      Data_matrix[,12]<-(FixedOwn)*Data_matrix[,3] #add Annual O&M cost for PVOwn
-      Data_matrix[,13]<-(Fixed3rd)*Data_matrix[,3] #add Annual O&M cost for 3rd party own
-      
+      Data_matrix[,12]<-(FixedOwn)*Data_matrix[,3] #add Annual O&M cost for PVOwn and 3rdOwn
+      green_dis<- c(rep(0,common_non_green),rep(0,other_non_green),rep(0,Care_non_green),rep(1,common_green),rep(1,other_green),rep(1,Care_green))
       for(i in 1:N){
-        Data_matrix[i,14] = ifelse((Data_matrix[i,2]-Data_matrix[i,1])>0,(Data_matrix[i,2]-Data_matrix[i,1])*(elec_rate[i]+BonusOwn),(Data_matrix[i,2]-Data_matrix[i,1])*elec_rate[i]) 
-      } # add NEM credits and (No Data_matrix[,15] anymore)
-      Data_matrix[,16] <- rnorm(n=N, mean=PerceivedOwn, sd=PerceivedOwn*CCEOwn_SD)
+        Data_matrix[i,14] = ifelse((Data_matrix[i,2]-Data_matrix[i,1])<0,(Data_matrix[i,2]-Data_matrix[i,1])*elec_rate[i],ifelse(Flat_OAS=="Flat rate",(Data_matrix[i,2]-Data_matrix[i,1])*Flat_rate,(Data_matrix[i,2]-Data_matrix[i,1])*(elec_rate[i]+BonusOwn-ifelse(Price_P=="Yes",0,green_dis[i]*Elec4))))}      
+      Data_matrix[,16] <- rnorm(n=N, mean=PerceivedOwn, sd=PerceivedOwn*CCEOwn_SD)                     
       Data_matrix[,17] <- rnorm(n=N, mean=Perceived3rd, sd=Perceived3rd*NonCCE3rd_SD) # add perceived cost for both PVOwn and 3rdOwn
-      CCA_discount <- (1+Discount/100)/(1+Escal/100)-1 # calculate the escalator and discount combined rate. 
+      CCA_discount <- (1+CDiscount/100)/(1+Escal/100)-1 # calculate the escalator and discount combined rate. 
       
       Data_matrix[,22] <- (Data_matrix[,9]*12)/CCA_discount*(1-1/((1+CCA_discount)^Lifetime))
       Connection_fee <- ifelse((agency=="Lancaster")|(agency=="Apple Valley"),75,145)
-      Data_matrix[,23] <- ((Data_matrix[,10]-Data_matrix[,14]+Data_matrix[,16])*12+Data_matrix[,12])/(Discount/100)*(1-1/((1+Discount/100)^Lifetime))+Connection_fee
-      Data_matrix[,24] <- ((Data_matrix[,11]-Data_matrix[,14]+Data_matrix[,17])*12+Data_matrix[,13])/(Discount/100)*(1-1/((1+Discount/100)^Lifetime))+Connection_fee
+      Data_matrix[,23] <- ((Data_matrix[,10]-Data_matrix[,14]+Data_matrix[,16])*12+Data_matrix[,12])/(CDiscount/100)*(1-1/((1+CDiscount/100)^Lifetime))+Connection_fee
+      Data_matrix[,24] <- ((Data_matrix[,11]-Data_matrix[,14]+Data_matrix[,17])*12)/(CDiscount/100)*(1-1/((1+CDiscount/100)^Lifetime))+Connection_fee
       
-      for (i in 1:N) {
-        Data_matrix[i,25] = which.min(Data_matrix[i,22:24])} # choose the lowest cost. 
-      
+      for (i in 1:N){
+      Data_matrix[i,25] = which.min(Data_matrix[i,22:24])} # choose the lowest cost. 
       # these are to calculate the market share of each car model
       Marketshare <-matrix(rep(NA,3),nrow=1, ncol=3)
       for (i in 1:3){
@@ -310,7 +357,7 @@ server <- function(input, output) {
       Marketshare_Table <- (Marketshare_List[match(agency,Marketshare_List$Agency),2:4])
       Marketshare_Table[2,] <- Marketshare[1,]
       Marketshare_Table[3,] <- ((Marketshare_Table[2,]-Marketshare_Table[1,])*100)^2
-      rownames(Marketshare_Table)<- c("Actual Marketshare","Estimated Marketshare from Model","The difference bewteen Actual Marketshare and Model")
+      rownames(Marketshare_Table)<- c("Actual Marketshare","Estimated Marketshare from Model","The difference between Actual Marketshare and Model")
       return(Marketshare_Table)
     }
   
@@ -346,6 +393,10 @@ server <- function(input, output) {
     Elec3_perc <- input$Elec3_perc
     Elec4 <- input$Elec4
     Elec4_perc <- input$Elec4_perc
+    Avg_non <- input$Avg_non
+    Avg_CARE_non_green <- input$Avg_CARE_non_green
+    Avg_non_CARE_green <- input$Avg_non_CARE_green
+    Avg_CARE_green <- input$Avg_CARE_green
     
     mix1 <- input$mix1
     mix2 <- input$mix2
@@ -361,7 +412,9 @@ server <- function(input, output) {
     Impact <- input$Impact
     Rebound <- input$Rebound
     Trans <- input$Trans
-    Discount <- input$Discount
+    CDiscount <- input$CDiscount
+    ADiscount <- input$ADiscount
+    SDiscount <- input$SDiscount
     Carbon_p <-input$Carbon_p
     
     CapFactrOwn <-input$CapFactrOwn  
@@ -376,21 +429,19 @@ server <- function(input, output) {
     Marketing <- input$Marketing 
     DefaultOwn <- input$DefaultOwn
     
-    
-    CapFactr3rd <- input$CapFactr3rd  
-    Fixed3rd <- input$Fixed3rd
     NonCCE3rd <- input$NonCCE3rd
     PayPeriod3rd <- input$PayPeriod3rd
-    Rebate3rd <- input$Rebate3rd
-    PercRebate3rd <- input$PercRebate3rd 
-    Bonus3rd <- input$Bonus3rd 
-    PercGen3rd <- input$PercGen3rd
     
+    Flat_OAS <- input$Flat_OAS
+    Flat_rate <- input$Flat_rate
+    BonusOwn <- input$BonusOwn
+    Price_P <- input$Price_P
+
     CCEOwn_SD <- 0.2
     NonCCE3rd_SD <- 0.2
     PerceivedOwn <- input$PerceivedOwn
     Perceived3rd <- input$Perceived3rd
-    Lifetime <- 25
+    Lifetime <- input$Lifetime
     
     
     Av_elec <- read_csv("Average_elec.csv")
@@ -408,16 +459,35 @@ server <- function(input, output) {
     ##########################################################################
     # MODEL(BASE)
     
-    Mean_elec <- as.numeric(Av_elec[match(agency,Av_elec$Agency),2]) # Mean value of electricity consumption by agency
-    ln_Mean_elec <- log(Mean_elec)
-    SD_elec <- 0.4543209 # Standard deviation of Ln(electricity)
-    Elec <- exp(rnorm(n=N,mean=ln_Mean_elec, sd=SD_elec)) # Calulate electricity distribution from normally distributed ln(elec consumption)
-    Elec[Elec>3000]=3000 # Electricity consumption that is larger than 3,000 is 3,000
+    SD_elec <- 0.4 # Standard deviation of Ln(electricity)
+    other_non_green <- round((Elec3_perc)/100*(1-Elec4_perc/100)*N,digits=0)
+    common_green <- round((Elec1_perc)/100*Elec4_perc/100*N,digits=0)
+    other_green <- round((Elec3_perc)/100*Elec4_perc/100*N,digits=0)
+    Care_green <- round(Elec2_perc/100*Elec4_perc/100*N,digits=0)
+    Care_non_green <-round(Elec2_perc/100*(1-Elec4_perc/100)*N,digits=0)
+    common_non_green <- N-other_non_green-common_green-other_green-Care_green-Care_non_green
+    
+    ln_Mean_elec1<- log(Avg_non) 
+    ln_Mean_elec2<- log(Avg_CARE_non_green) 
+    ln_Mean_elec3<- log(Avg_non_CARE_green) 
+    ln_Mean_elec4<- log(Avg_CARE_green) 
+    
+    Elec_dis1 <- exp(rnorm(n=common_non_green,mean=ln_Mean_elec1, sd=SD_elec))
+    Elec_dis2 <- exp(rnorm(n=other_non_green,mean=ln_Mean_elec1, sd=SD_elec))
+    Elec_dis3 <- exp(rnorm(n=Care_non_green,mean=ln_Mean_elec2, sd=SD_elec))
+    Elec_dis4 <- exp(rnorm(n=common_green,mean=ln_Mean_elec3, sd=SD_elec))
+    Elec_dis5 <- exp(rnorm(n=other_green,mean=ln_Mean_elec3, sd=SD_elec))
+    Elec_dis6 <- exp(rnorm(n=Care_green,mean=ln_Mean_elec4, sd=SD_elec))
+    
+    Elec_distribution <- c(Elec_dis1,Elec_dis2,Elec_dis3,Elec_dis4,Elec_dis5,Elec_dis6)
+    
+    
+    Elec_distribution[Elec_distribution>3000]=3000 # Electricity consumption that is larger than 3,000 is 3,000
     # these are the values we use and subject to change
     Data_matrix <- matrix(rep(NA,N*27),nrow=N, ncol=27)
     colnames(Data_matrix)<- c("1.Electricity Usage(Kwh/month)","2.PV Generation(kWh/month)","3.System Size(kW)", "4.Rounded Size (kW)", "5.PV cost per kW","6.PV unit cost with noise","7.Old interest","8.3rd interest", "9.Energy Cost(CCA)","10.Energy Cost(Old)","11.Energy Cost(3rd)","12.Annual O&M cost(Own)","13.Annual O&M cost(3rd)","14.NEM(Own & 3rd)", "15.None", "16.Perceived Cost(Own)","17.Perceived Cost(3rd)","18.CCE interest", "19.Final CCA interest", "20.Capital Cost","21.Energy Cost(Own)","22.Base-total cost(CCA)", "23.Base-total cost(Own)", "24.Base-total cost(3rd)", "25.Base choices", "26.CCE-total cost","27.CCE choices")
     
-    Data_matrix[,1] <- Elec # add the electricity consumption distribution in the first column
+    Data_matrix[,1] <- Elec_distribution # add the electricity consumption distribution in the first column
     PV_Gen_ln_mean <- log(PercGenOwn/100)
     PV_Gen_distribution <- (-(exp(rnorm(n=N,mean=PV_Gen_ln_mean, sd=0.1))-1)+1)
     Data_matrix[,2] <- Data_matrix[,1]*PV_Gen_distribution 
@@ -427,32 +497,38 @@ server <- function(input, output) {
     PV_table <- subset(PVcost, select=agency)
     for (i in 1:N) {
       Data_matrix[i,5] = ifelse(Data_matrix[i,4]>20, 3000, ifelse(Data_matrix[i,4]<1, 6000,as.numeric(PV_table[match(Data_matrix[i,4],PVcost$Size),1])))} # Pick the PV cost based on agency and PV size, and add in 5th col. 
-    Data_matrix[,6] <- Data_matrix[,5]*rnorm(n=N,mean=1,sd=CCEOwn_SD) # add noisy because the PV cost per kw can be different across PV companies. In the excel, the column 5 and 6 are combined. 
+    Rebate_dis <- as.numeric(sample(c(1,0),N,prob=c(PercRebateOwn/100,1-PercRebateOwn/100),replace=TRUE))*-1000*RebateOwn
+    
+    Data_matrix[,6] <- Data_matrix[,5]*rnorm(n=N,mean=1,sd=CCEOwn_SD)+Rebate_dis # add noisy because the PV cost per kw can be different across PV companies, and add rebate distribution In the excel, the column 5 and 6 are combined
+    
     Data_matrix[,7] <- rnorm(n=N, mean=NonCCEOwn, sd=NonCCEOwn*CCEOwn_SD)/100 # old interest rate. 
     Data_matrix[,8] <- Data_matrix[,7]+(NonCCE3rd-NonCCEOwn)/100 # 3rd party own interest rate
-    Rate_table <- matrix(c(Elec1,Elec2,Elec3, Elec1_perc/100, Elec2_perc/100, Elec3_perc/100), nrow=3, ncol=2) # make electricity rate table based on the inputs
-    elec_rate <- as.numeric(sample(as.character(unlist(Rate_table[,1])),N, prob=as.character(unlist(Rate_table[,2])),replace=TRUE)) 
-    # sample CCA rate based on the probability
+    
+    elec_rate <- c(rep(Elec1,common_non_green),rep(Elec3,other_non_green),rep(Elec2,Care_non_green),rep(Elec1+Elec4,common_green),rep(Elec3+Elec4,other_green),rep(Elec2+Elec4,Care_green))
+    
+    
     Data_matrix[,9] <- Data_matrix[,1]*elec_rate # add monthly energy cost when getting electricity from CCA
     Data_matrix[,20]<- Data_matrix[,3]*Data_matrix[,6]# solar PV capital cost
     Data_matrix[,10]<-(-pmt(Data_matrix[,7]/12, PayPeriodOwn*12,Data_matrix[,20])) # add monthly energy cost when owning PV (Own)
     Data_matrix[,11]<- (-pmt(Data_matrix[,8]/12, PayPeriod3rd*12, Data_matrix[,20])) # add monthly energy cost when owning PV (3rd)
     Data_matrix[,12]<-(FixedOwn)*Data_matrix[,3] #add Annual O&M cost for PVOwn
-    Data_matrix[,13]<-(Fixed3rd)*Data_matrix[,3] #add Annual O&M cost for 3rd party own
+    
+    green_dis<- c(rep(0,common_non_green),rep(0,other_non_green),rep(0,Care_non_green),rep(1,common_green),rep(1,other_green),rep(1,Care_green))
+    
     
     for(i in 1:N){
-      Data_matrix[i,14] = ifelse((Data_matrix[i,2]-Data_matrix[i,1])>0,(Data_matrix[i,2]-Data_matrix[i,1])*(elec_rate[i]+BonusOwn),(Data_matrix[i,2]-Data_matrix[i,1])*elec_rate[i]) 
-    } # add NEM credits and (No Data_matrix[,15] anymore)
+      Data_matrix[i,14] = ifelse((Data_matrix[i,2]-Data_matrix[i,1])<0,(Data_matrix[i,2]-Data_matrix[i,1])*elec_rate[i],ifelse(Flat_OAS=="Flat rate",(Data_matrix[i,2]-Data_matrix[i,1])*Flat_rate,(Data_matrix[i,2]-Data_matrix[i,1])*(elec_rate[i]+BonusOwn-ifelse(Price_P=="Yes",0,green_dis[i]*Elec4))))} # add NEM credits and (No Data_matrix[,15] anymore)
+    
     Data_matrix[,16] <- rnorm(n=N, mean=PerceivedOwn, sd=PerceivedOwn*CCEOwn_SD)
     Data_matrix[,17] <- rnorm(n=N, mean=Perceived3rd, sd=Perceived3rd*NonCCE3rd_SD) # add perceived cost for both PVOwn and 3rdOwn
-    CCA_discount <- (1+Discount/100)/(1+Escal/100)-1 # calculate the escalator and discount combined rate. 
+    CCA_discount <- (1+CDiscount/100)/(1+Escal/100)-1 # calculate the escalator and discount combined rate. 
     
     Data_matrix[,22] <- (Data_matrix[,9]*12)/CCA_discount*(1-1/((1+CCA_discount)^Lifetime))
     Connection_fee <- ifelse((agency=="Lancaster")|(agency=="Apple Valley"),75,145)
-    Data_matrix[,23] <- ((Data_matrix[,10]-Data_matrix[,14]+Data_matrix[,16])*12+Data_matrix[,12])/(Discount/100)*(1-1/((1+Discount/100)^Lifetime))+Connection_fee
-    Data_matrix[,24] <- ((Data_matrix[,11]-Data_matrix[,14]+Data_matrix[,17])*12+Data_matrix[,13])/(Discount/100)*(1-1/((1+Discount/100)^Lifetime))+Connection_fee
+    Data_matrix[,23] <- ((Data_matrix[,10]-Data_matrix[,14]+Data_matrix[,16])*12+Data_matrix[,12])/(CDiscount/100)*(1-1/((1+CDiscount/100)^Lifetime))+Connection_fee
+    Data_matrix[,24] <- ((Data_matrix[,11]-Data_matrix[,14]+Data_matrix[,17])*12)/(CDiscount/100)*(1-1/((1+CDiscount/100)^Lifetime))+Connection_fee
     
-    for (i in 1:N) {
+    for (i in 1:N){
       Data_matrix[i,25] = which.min(Data_matrix[i,22:24])} # choose the lowest cost. 
     Base <- length(which(Data_matrix[,25]==2)) #count the PVOwn
     
@@ -463,7 +539,7 @@ server <- function(input, output) {
     Data_matrix[,19]<- ifelse(Data_matrix[,7]<CCEOwn/100, Data_matrix[,7], ifelse(Data_matrix[,7]<NonCCEOwn/100, CCEOwn/100, Data_matrix[,18])) #Final CCE interest rate
     Data_matrix[,21]<- -pmt(Data_matrix[,19]/12, PayPeriodOwn*12, Data_matrix[,20]) # monthly energy cost (CCE)
     
-    Data_matrix[,26] <- ((Data_matrix[,21]-Data_matrix[,14]+Data_matrix[,16])*12+Data_matrix[,12])/(Discount/100)*(1-1/(1+Discount/100)^Lifetime)
+    Data_matrix[,26] <- ((Data_matrix[,21]-Data_matrix[,14]+Data_matrix[,16])*12+Data_matrix[,12])/(CDiscount/100)*(1-1/(1+CDiscount/100)^Lifetime)
     for (i in 1:N) {
       Data_matrix[i,27] = which.min(Data_matrix[i,c(22,24,26)])}
     Model_CCE <- length(which(Data_matrix[,27]==3)) #count the CCEOwn
@@ -486,12 +562,12 @@ server <- function(input, output) {
     Degrade_matrix <- matrix(rep(NA,Lifetime*2),ncol=2)
     Degrade_matrix[1,1] <- 1
     Degrade_matrix[2,1] <- 1-0.02
-    Degrade_matrix[1,2] <- 1/(1+Discount/100)
-    Degrade_matrix[2,2] <- Degrade_matrix[2,1]/(1+Discount/100)^2
+    Degrade_matrix[1,2] <- 1/(1+SDiscount/100)
+    Degrade_matrix[2,2] <- Degrade_matrix[2,1]/(1+SDiscount/100)^2
     
     for (i in 3:Lifetime){
       Degrade_matrix[i,1] <- Degrade_matrix[i-1,1]-0.008
-      Degrade_matrix[i,2] <- Degrade_matrix[i,1]/(1+Discount/100)^i
+      Degrade_matrix[i,2] <- Degrade_matrix[i,1]/(1+SDiscount/100)^i
     }
     colnames(Degrade_matrix) <- c("degradation","discounted")
     Aggreated_degradation <- sum(Degrade_matrix[,1])
@@ -509,8 +585,8 @@ server <- function(input, output) {
     Number_month <- PayPeriodOwn*12
     Monthly_payment <- -pmt(CCEOwn/100/12, Number_month, Average_loan)
     
-    Collected_revenue <- (1-DefaultOwn/100)*(Monthly_payment)/(Discount/100/12)*(1-1/(Discount/100/12+1)^(Number_month))*Uptakes_caused
-    Loan_provided <- Average_loan*Uptakes_caused
+    Collected_revenue <- (1-DefaultOwn/100)*(Monthly_payment)/(ADiscount/100/12)*(1-1/(ADiscount/100/12+1)^(Number_month))*Final_uptakes
+    Loan_provided <- Average_loan*Final_uptakes
     Avg_NEM_bonus<- sum(Data_matrix[(Data_matrix[,14]>0) & (Data_matrix[,27]==3),14])/CCE*12*(BonusOwn)/(BonusOwn+Elec1)
     Revenue_lost <- sum(Degrade_matrix[,2])*Final_uptakes_caused*(Average_Gen*(Elec1*Elec1_perc/100+Elec2*Elec2_perc/100+Elec3*Elec3_perc/100)*rev_perc/100+Avg_NEM_bonus)
     Revenue_change <- Collected_revenue-Loan_provided-ProgramCost-Revenue_lost

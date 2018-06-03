@@ -8,6 +8,9 @@ pmt <- function(rate, nper, pv, fv=0, type=0) {
   res <- (-pv-fv*rr)*rate/(1-rr)
   return(res/(1+rate*type))} #pmt function
 
+
+
+
 agency <- "MCE"
 ProgramCost <- 200000
 Budget <- 20000000
@@ -303,3 +306,189 @@ perceived_cost <- optim( # Store optimization output in a list called OO
   upper = Inf, # Upper boundary for the decision variables
   lower = -Inf, # Lower boundary for the decision variables
   method = "L-BFGS-B") # Optimization algorithm that allows for interval specification
+
+
+
+###################################################################################
+pmt <- function(rate, nper, pv, fv=0, type=0) {
+  rr <- 1/(1+rate)^nper
+  res <- (-pv-fv*rr)*rate/(1-rr)
+  return(res/(1+rate*type))} #pmt function
+
+TCMfunction <- function(PerceivedOwn,Perceived3rd){
+  
+  
+  
+  agency <- "MCE"
+  ProgramCost <- 200000
+  Budget <- 20000000
+  rev_perc <- 10
+  Escal <- 2
+  Elec1 <- 0.238
+  Elec1_perc <- 68
+  Elec2 <- 0.140
+  Elec2_perc <- 28
+  Elec3 <- 0.199
+  Elec3_perc <- 4
+  Elec4 <- 0.010
+  Elec4_perc <- 1
+  Avg_non <- 574
+  Avg_CARE_non_green <- 339
+  Avg_non_CARE_green <- 387
+  Avg_CARE_green <- 294
+  
+  mix1 <- 0
+  mix2 <- 12
+  mix3 <- 0
+  mix4 <- 0 
+  mix5<- 13
+  mix6 <- 5
+  mix7 <- 0
+  mix8 <- 50
+  mix9 <- 0 
+  mix10 <- 20
+  
+  Impact <- "Mid"
+  Rebound <- 3
+  Trans <- 5
+  
+  CDiscount <- 6
+  ADiscount <- 2.5
+  SDiscount <- 5
+  carbon_p <- 13
+  
+  
+  SizeOwn <- 5.7
+  CapFactrOwn <-20   
+  FixedOwn <- 146.32
+  VarOwn <- 0
+  NonCCEOwn <- 7.9
+  CCEOwn <- 8
+  PayPeriodOwn <- 20
+  RebateOwn <- 0
+  PercRebateOwn <- 0
+  BonusOwn <- 0.01
+  PercGenOwn <- 99.4
+  Marketing <- 10
+  DefaultOwn <- 5
+  
+  
+  Size3rd <- 5.7
+  CapFactr3rd <-20   
+  Fixed3rd <- 146.32
+  Var3rd <- 0
+  NonCCE3rd <- 9
+  PayPeriod3rd <- 20
+  Rebate3rd <- 0
+  PercRebate3rd <- 0 
+  Bonus3rd <- 0.01
+  PercGen3rd <- 0
+  
+  CCEOwn_SD <- 0.2
+  NonCCE3rd_SD <- 0.2
+  PerceivedOwn <- 100
+  Perceived3rd <- 92
+  Lifetime <- 25
+  
+  
+  Flat_OAS <- "Flat rate"
+  Flat_rate <- 0.06
+  BonusOwn <- 0.01
+  Price_P <- "Yes"
+  
+  
+  
+  Av_elec <- read_csv("Average_elec.csv")
+  PVcost <- read_csv("PV_cost.csv")
+  Marketshare_List <- read_csv("Marketshare.csv")
+  N = 10000 # Number of simulation
+  
+  ##########################################################################
+  # MODEL(BASE)
+SD_elec <- 0.4 # Standard deviation of Ln(electricity)
+other_non_green <- round((Elec3_perc)/100*(1-Elec4_perc/100)*N,digits=0)
+common_green <- round((Elec1_perc)/100*Elec4_perc/100*N,digits=0)
+other_green <- round((Elec3_perc)/100*Elec4_perc/100*N,digits=0)
+Care_green <- round(Elec2_perc/100*Elec4_perc/100*N,digits=0)
+Care_non_green <-round(Elec2_perc/100*(1-Elec4_perc/100)*N,digits=0)
+common_non_green <- N-other_non_green-common_green-other_green-Care_green-Care_non_green
+
+ln_Mean_elec1<- log(Avg_non) 
+ln_Mean_elec2<- log(Avg_CARE_non_green) 
+ln_Mean_elec3<- log(Avg_non_CARE_green) 
+ln_Mean_elec4<- log(Avg_CARE_green) 
+
+Elec_dis1 <- exp(rnorm(n=common_non_green,mean=ln_Mean_elec1, sd=SD_elec))
+Elec_dis2 <- exp(rnorm(n=other_non_green,mean=ln_Mean_elec1, sd=SD_elec))
+Elec_dis3 <- exp(rnorm(n=Care_non_green,mean=ln_Mean_elec2, sd=SD_elec))
+Elec_dis4 <- exp(rnorm(n=common_green,mean=ln_Mean_elec3, sd=SD_elec))
+Elec_dis5 <- exp(rnorm(n=other_green,mean=ln_Mean_elec3, sd=SD_elec))
+Elec_dis6 <- exp(rnorm(n=Care_green,mean=ln_Mean_elec4, sd=SD_elec))
+
+Elec_distribution <- c(Elec_dis1,Elec_dis2,Elec_dis3,Elec_dis4,Elec_dis5,Elec_dis6)
+
+Elec_distribution[Elec_distribution>3000]=3000 # Electricity consumption that is larger than 3,000 is 3,000
+
+# these are the values we use and subject to change
+Data_matrix <- matrix(rep(NA,N*27),nrow=N, ncol=27)
+colnames(Data_matrix)<- c("1.Electricity Usage(Kwh/month)","2.PV Generation(kWh/month)","3.System Size(kW)", "4.Rounded Size (kW)", "5.PV cost per kW","6.PV unit cost with noise","7.Old interest","8.3rd interest", "9.Energy Cost(CCA)","10.Energy Cost(Old)","11.Energy Cost(3rd)","12.Annual O&M cost(Own)","13.Annual O&M cost(3rd)","14.NEM(Own & 3rd)", "15.None", "16.Perceived Cost(Own)","17.Perceived Cost(3rd)","18.CCE interest", "19.Final CCA interest", "20.Capital Cost","21.Energy Cost(Own)","22.Base-total cost(CCA)", "23.Base-total cost(Own)", "24.Base-total cost(3rd)", "25.Base choices", "26.CCE-total cost","27.CCE choices")
+
+Data_matrix[,1] <- Elec_distribution # add the electricity consumption distribution in the first column
+PV_Gen_ln_mean <- log(PercGenOwn/100)
+PV_Gen_distribution <- (-(exp(rnorm(n=N,mean=PV_Gen_ln_mean, sd=0.1))-1)+1)
+Data_matrix[,2] <- Data_matrix[,1]*PV_Gen_distribution 
+# add the PV generation in the second column
+Data_matrix[,3] <- Data_matrix[,2]*12/(8760*CapFactrOwn/100) # add the PV size in 3rd col
+Data_matrix[,4] <- round(Data_matrix[,3], digits=0) # round PV size
+PV_table <- subset(PVcost, select=agency)
+for (i in 1:N) {
+  Data_matrix[i,5] = ifelse(Data_matrix[i,4]>20, 3000, ifelse(Data_matrix[i,4]<1, 6000,as.numeric(PV_table[match(Data_matrix[i,4],PVcost$Size),1])))} # Pick the PV cost based on agency and PV size, and add in 5th col.
+Rebate_dis <- as.numeric(sample(c(1,0),N,prob=c(PercRebateOwn/100,1-PercRebateOwn/100),replace=TRUE))*-1000*RebateOwn
+
+Data_matrix[,6] <- Data_matrix[,5]*rnorm(n=N,mean=1,sd=CCEOwn_SD)+Rebate_dis # add noisy because the PV cost per kw can be different across PV companies, and add rebate distribution In the excel, the column 5 and 6 are combined
+
+Data_matrix[,7] <- rnorm(n=N, mean=NonCCEOwn, sd=NonCCEOwn*CCEOwn_SD)/100 # old interest rate. 
+Data_matrix[,8] <- Data_matrix[,7]+(NonCCE3rd-NonCCEOwn)/100 # 3rd party own interest rate
+
+elec_rate <- c(rep(Elec1,common_non_green),rep(Elec3,other_non_green),rep(Elec2,Care_non_green),rep(Elec1+Elec4,common_green),rep(Elec3+Elec4,other_green),rep(Elec2+Elec4,Care_green))
+
+
+Data_matrix[,9] <- Data_matrix[,1]*elec_rate # add monthly energy cost when getting electricity from CCA
+Data_matrix[,20]<- Data_matrix[,3]*Data_matrix[,6]# solar PV capital cost
+Data_matrix[,10]<-(-pmt(Data_matrix[,7]/12, PayPeriodOwn*12,Data_matrix[,20])) # add monthly energy cost when owning PV (Own)
+Data_matrix[,11]<- (-pmt(Data_matrix[,8]/12, PayPeriod3rd*12, Data_matrix[,20])) # add monthly energy cost when owning PV (3rd)
+Data_matrix[,12]<-(FixedOwn)*Data_matrix[,3] #add Annual O&M cost for PVOwn
+
+green_dis<- c(rep(0,common_non_green),rep(0,other_non_green),rep(0,Care_non_green),rep(1,common_green),rep(1,other_green),rep(1,Care_green))
+
+
+for(i in 1:N){
+  Data_matrix[i,14] = ifelse((Data_matrix[i,2]-Data_matrix[i,1])<0,(Data_matrix[i,2]-Data_matrix[i,1])*elec_rate[i],ifelse(Flat_OAS=="Flat rate",(Data_matrix[i,2]-Data_matrix[i,1])*Flat_rate,(Data_matrix[i,2]-Data_matrix[i,1])*(elec_rate[i]+BonusOwn-ifelse(Price_P=="Yes",0,green_dis[i]*Elec4))))}      
+
+Data_matrix[,17] <- rnorm(n=N, mean=Perceived3rd, sd=Perceived3rd*NonCCE3rd_SD) # add perceived cost for both PVOwn and 3rdOwn
+CCA_discount <- (1+CDiscount/100)/(1+Escal/100)-1 # calculate the escalator and discount combined rate. 
+
+Data_matrix[,22] <- (Data_matrix[,9]*12)/CCA_discount*(1-1/((1+CCA_discount)^Lifetime))
+Connection_fee <- ifelse((agency=="Lancaster")|(agency=="Apple Valley"),75,145)
+Data_matrix[,23] <- ((Data_matrix[,10]-Data_matrix[,14]+Data_matrix[,16])*12+Data_matrix[,12])/(CDiscount/100)*(1-1/((1+CDiscount/100)^Lifetime))+Connection_fee
+Data_matrix[,24] <- ((Data_matrix[,11]-Data_matrix[,14]+Data_matrix[,17])*12+Data_matrix[,12])/(CDiscount/100)*(1-1/((1+CDiscount/100)^Lifetime))+Connection_fee
+
+for (i in 1:N){
+  Data_matrix[i,25] = which.min(Data_matrix[i,22:24])} # choose the lowest cost. 
+
+# these are to calculate the market share of each car model
+Marketshare <-matrix(rep(NA,3),nrow=1, ncol=3)
+for (i in 1:3){
+  Marketshare[,i]= length(which(Data_matrix[,25]==i))/N
+}
+Marketshare_Table <- (Marketshare_List[match(agency,Marketshare_List$Agency),2:4])
+Marketshare_Table[2,] <- Marketshare[1,]
+Marketshare_Table[3,] <- ((Marketshare_Table[2,]-Marketshare_Table[1,])*100)^2
+rownames(Marketshare_Table)<- c("Actual Marketshare","Estimated Marketshare from Model","The difference between Actual Marketshare and Model")
+return(Marketshare_Table)
+}
+
+P_Own <- 126
+P_third <- 120
+Marketshare <- TCMfunction(P_Own, P_third)
+
