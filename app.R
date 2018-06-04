@@ -6,14 +6,11 @@ library(ggplot2)
 library(htmltools)
 library(bsplus)
 
-# separate normal distribution
-# calculate the environmental benefits, health benenfits. 
-#reactive?
 
 
 # Define UI for app that draws a bar graph ----
 ui <-  dashboardPage(
-  dashboardHeader(title="Solar Financing Program Toolkit"),
+  dashboardHeader(title="Solar Financing Program"),
   dashboardSidebar(
     sidebarMenu(
       
@@ -199,10 +196,10 @@ ui <-  dashboardPage(
               column(width=3, box(title = "3rd Party-Owned Solar PV Inputs", width=NULL, status = "primary", solidHeader = TRUE, collapsible = TRUE, 
                   numericInput(inputId ="NonCCE3rd", " Existing (non-CCE) financing interest rate (%)", value = 9)%>% shinyInput_label_embed(
                         shiny_iconlink() %>%
-                          bs_embed_tooltip(title = " the average financing interest rates that solar buyers can currently get on the market without the CCE agency financing program.",  placement = "right")),
+                          bs_embed_tooltip(title = " the average financing interest rates that solar buyers can currently get on the market without the CCE agency financing program.",  placement = "left")),
                       numericInput(inputId ="PayPeriod3rd", " Financing payback period (years)", value = 20)%>% shinyInput_label_embed(
                         shiny_iconlink() %>%
-                          bs_embed_tooltip(title = "the length of time given to the financing customer to pay back their loan plus interest",  placement = "right"))
+                          bs_embed_tooltip(title = "the length of time given to the financing customer to pay back their loan plus interest",  placement = "left"))
                       ))
                   
          
@@ -277,7 +274,7 @@ server <- function(input, output) {
       Av_elec <- read_csv("Average_elec.csv")
       PVcost <- read_csv("PV_cost.csv")
       Marketshare_List <- read_csv("Marketshare.csv")
-      N = 10000 # Number of simulation
+      N = 20000 # Number of simulation
       
       ##########################################################################
       # MODEL(BASE)
