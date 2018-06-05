@@ -14,26 +14,26 @@ ui <-  dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       
-      menuItem("Model Overview", tabName = "tab_1"),
+      menuItem("Tool Overview", tabName = "tab_1"),
       menuItem("User Guide", tabName = "tab_2"), 
-      menuItem("[Step1] Toolkit-Inputs", tabName = "tab_3"),
-      menuItem("[Step2] Toolkit-Results", tabName = "tab_4")
+      menuItem("Inputs", tabName = "tab_3"),
+      menuItem("Results", tabName = "tab_4")
       
       
     )), 
   dashboardBody(tabItems(
     tabItem(tabName = "tab_1",
-            fluidPage(h3("Model Overview"),
-                      box(width = 12, h4("Introduction"),p("This is a tool meant to help Community Choice Energy Agencies predict the costs and benefits associated with offering a financing to install solar PV")
+            fluidPage(h3("Tool Overview"),
+                      box(width = 12, h4("Introduction"),p("This is a tool meant to help Community Choice Energy agencies predict costs and benefits associated with offering financing to their residential customers to install solar photovoltaic (PV) systems for their homes.")
                       ),
-                      box(width = 12, h4("Using the Toolkit"),p("To use this model, at a minimum, users will need to enter values into the Primary Inputs section of the Toolkit tab. This section includes: Agency (region), % of electricity sales as net revenue, energy mix data, customer electricity rates, and electricity usage. There are a variety of additional inputs that allow users to users add further program specifications as appropriate. A detailed breakdown of all available input options is included in the User Guide tab.")
+                      box(width = 12, h4("Using the Tool: Inputs"),p("The tool requires that users enter values in at least the Primary Inputs section of the Inputs page. This section includes: Agency (region), % of electricity sales as net revenue, energy mix data, customer electricity rates, and electricity usage. There are a variety of additional inputs that allow users to users add further program specifications as desired. A detailed breakdown of all available input options is included in the User Guide page.")
                       ),
-                      box(width = 12, h4("Results"), p("Once the user has filled in the appropriate inputs and run the model, results will be displayed on the righthand side of the Toolkit tab. The main results show the predicted solar PV uptake caused by solar financing program. These results show the total number of solar financing loans offered, and the predicted solar PV uptake caused by the financing program. The model then displays predicted health, environmental, and monetary impacts associated with the financing program. ")
+                      box(width = 12, h4("Using the Tool: Results"), p("The tool's primary results are the predicted solar PV uptake caused by solar financing program.  The tool's secondary results are the predicted health, environmental, and monetary impacts associated with the financing program.")
                       ))) , 
     tabItem(tabName = "tab_2",
             fluidPage(h3("User Guide"),
                       box( width = 12, h4("Primary Inputs"),p("These inputs represent the minimum amount of information necessary to run the model. They are:"), 
-                           br(),tags$div(tags$ul(tags$li("Agency (Region): Which CCE Agency will be running the program. The model uses this) information to set the correct population level and predict local emissions impacts."), 
+                           br(),tags$div(tags$ul(tags$li("Agency: Which CCE Agency will be running the program. The model uses this information to set the correct population level and predict local emissions impacts."), 
                                                  tags$li("Electricity rate data: These inputs are used to calculate the foregone revenue from CCE agency electricity sales to agency customers who will now be getting electricity generated from their solar panels instead."),
                                                  tags$li("Transmission losses (%): the average percentage of electricity supplied by the CCE agency that is lost during transmission."),
                                                  tags$li("These values specify the composition of the energy mix to calculate the greenhouse gas emissions that are avoided when electricity is sourced from the homeowner’s solar panels rather than agency supply."),  style = "font-size: 13px"))),    
@@ -48,7 +48,7 @@ ui <-  dashboardPage(
                                                  tags$li("NEM generator payments ($/kWh)"),
                                                  tags$li("Average percentage of bill that is net generation (%)"),
                                                  tags$li("% of solar buyers using program"),  style = "font-size: 13px"))),
-                      box( width = 12, h4("Optional Inputs"), p("The toolkit provides advanced customizability through additional inputs. These inputs have pre-set default values that can be left as is, if the user so desires. Inputs include:"), 
+                      box( width = 12, h4("Optional Inputs"), p("The tool provides advanced customizability through additional inputs. These inputs have pre-set default values that can be left as is, if the user so desires. Inputs include:"), 
                            br(), tags$div(tags$ul(tags$li("Expected default rate (%)"), 
                                                   tags$li("Rebound effect (%)"), 
                                                   tags$li("Customer’s discount rate (%)"), 
@@ -63,11 +63,11 @@ ui <-  dashboardPage(
                       ))), 
     tabItem(tabName ="tab_3",
             fluidPage(
-              titlePanel("1) Set all inputs in BLUE boxes first. 2) Click Calibrate. 3)Modify Calibration main inputs until calibrated. 4) Go to next tab to get results"),
+              titlePanel("1) Set all inputs in BLUE boxes first. 2) Click Calibrate. 3)Modify Calibration main inputs until calibrated. 4) Go to next page to get results"),
           
               fluidRow(
                 column(6,box(title = "Calibration main inputs", width=NULL, status = "success", solidHeader = TRUE, collapsible = TRUE,
-                             p("Review the results in the Calibration box after you click Calibrate. To calibrate, increase/decrease each perceived cost such that the difference between the Actual Marketshare and Estimated Marketshare are within 0.02 for every category: CCA, PVOwn, 3rdOwn. This is a trial-and-error process, and may take 5-10 tries to achieve adequate calibration."),p(" For future use without calibration, remember these perceived costs values."),br(),
+                             p("Review the results in the Calibration box after you click Calibrate. To calibrate, increase/decrease each perceived cost such that the difference between the Actual Marketshare and Estimated Marketshare are within 0.02 for every category: CCE, PVOwn, 3rdOwn. This is a trial-and-error process, and may take 5-10 tries to achieve adequate calibration."),p(" For future use without calibration, remember these perceived costs values."),br(),
                              selectInput(inputId="Agency", "Agency (region)",
                                          choices = list("Apple Valley Choice Energy" = "Apple Valley", "Clean Power SF" = "San Francisco", "Lancaster Choice Energy" = "Lancaster", "MCE Clean Energy" ="MCE", "Peninsula Clean Energy"="Peninsula", "Redwood Coast Energy Authority"="Redwood Coast", "Silicon Valley Clean Energy"="Silicon Valley", "Sonoma Clean Power"="Sonoma"), selected = "MCE")%>%
                                shinyInput_label_embed(
@@ -78,7 +78,7 @@ ui <-  dashboardPage(
                   numericInput(inputId ="PerceivedOwn", "Perceived cost per month for owning solar PV($)", value = 120)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "If Actual Marketshare of PVOwn is higher than Estimated Marketshare decrease this value by several units.",  placement = "right")),
                   numericInput(inputId ="Perceived3rd", "Perceived cost per month for owning 3rd party owned solar PV ($)", value = 126)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "If Actual Marketshare of 3rdOwn is higher than Estimated Marketshare decrease this value by several units.",  placement = "right"))
                   
-                  )),column(6,box(title = "Calibration", width=NULL, status = "success", solidHeader = TRUE, collapsible = TRUE,p("Once you have clicked Calibrate, WAIT 10-30 seconds for results to appear at the bottom of this box. Your goal is to get the CCA Actual Marketshare and CCA Estimated Marketshare to match within 0.02 of each other."),p("If CCA Actual Marketshare is HIGHER than Estimated, DECREASE the perceived cost of Perceived cost of owning solar and/or Perceived cost of 3rd party owned solar. If CCA Actual Marketshare is LOWER than Estimated, INCREASE the perceived costs."),p("When the difference between the Actual Marketshare and Estimated Marketshare are within 0.02 for every category, you are good to go. Proceed to Toolkit-Results tab.") , actionButton("go2", "Calibrate"),br(),tableOutput("table3")
+                  )),column(6,box(title = "Calibration", width=NULL, status = "success", solidHeader = TRUE, collapsible = TRUE,p("Once you have clicked Calibrate, WAIT 10-30 seconds for results to appear at the bottom of this box. Your goal is to get the CCE Actual Marketshare and CCE Estimated Marketshare to match within 0.02 of each other."),p("If CCE Actual Marketshare is HIGHER than Estimated, DECREASE the perceived cost of owning solar and/or perceived cost of 3rd party owned solar. If CCE Actual Marketshare is LOWER than Estimated, INCREASE the perceived costs."),p("When the difference between the Actual Marketshare and Estimated Marketshare are within 0.02 for every category, you are good to go. Proceed to Results page.") , actionButton("go2", "Calibrate"),br(),tableOutput("table3")
                                   
                                   ))), 
               fluidRow(
