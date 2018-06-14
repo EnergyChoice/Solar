@@ -199,7 +199,10 @@ Final_uptakes_caused <- ifelse(Max_house<Total_uptakes,Max_house*(CCE-Base)/CCE,
 Average_Gen <- mean(Data_matrix[Data_matrix[,27]==3,2])*12
 Energymix <- matrix(c(mix1,mix2,mix3,mix4,mix5,mix6,mix7,mix8,mix9,mix10)/100, ncol=10)
 Emission <- as.matrix(Emission)
-Emission_Factor <- Energymix %*% Emission
+Emission_total <- Energymix %*% Emission
+Biogenic <- Energymix[1,6]*Emission[6,]
+Emission_Factor <- Emission_total-Biogenic
+
 Degrade_matrix <- matrix(rep(NA,Lifetime*2),ncol=2)
 Degrade_matrix[1,1] <- 1
 Degrade_matrix[2,1] <- 1-0.02
@@ -214,6 +217,9 @@ colnames(Degrade_matrix) <- c("degradation","discounted")
 Aggreated_degradation <- sum(Degrade_matrix[,1])
 
 Lifetime_Emission_Reduction <- as.matrix(Emission_Factor[1,]*Aggreated_degradation*Final_uptakes_caused*Average_Gen/1000*(1+Trans/100)/(1+Rebound/100))
+Lifetime_Emission_Reduction_Biogenic <- as.matrix(Biogenic*Aggreated_degradation*Final_uptakes_caused*Average_Gen/1000*(1+Trans/100)/(1+Rebound/100))
+
+
 Health_factor <- subset(Health,Health$Level==Impact)
 E_Reduced <- Lifetime_Emission_Reduction[2:5,]
 Health_Benefit <- matrix(rep(NA,4),ncol=4)

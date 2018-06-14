@@ -24,66 +24,89 @@ ui <-  dashboardPage(
   dashboardBody(tabItems(
     tabItem(tabName = "tab_1",
             fluidPage(h3("Tool Overview"),
-                      box(width = 12, h4("Introduction"),p("This is a tool meant to help Community Choice Energy agencies predict costs and benefits associated with offering financing to their residential customers to install solar photovoltaic (PV) systems for their homes.")
+                      box(width = 12, h4("Introduction"),p("This is a tool meant to help Community Choice Energy agencies predict costs and benefits associated with offering financing to their residential customers to install solar photovoltaic (PV) systems for their homes. Based on a variety of program, agency, and other specifications, the model predicts the number of solar installations that will be directly caused by a financing program, and then calculates associated financial implications, greenhouse gas (GHG) emission reductions, and health impacts. "),p("Users can visualize relationships among program design parameters by using the tool with a range of parameter values and recording the results. For example, a user might hold all input values constant and vary only agency program interest rate in order to isolate its effect on cost per ton of GHG emission reductions, or another tool output."),p("This tool is available at www.ccetoolkit.weebly.com and from the Center for Climate Protection (www.climateprotection.org). Also available are tool documentation and the same tool in Microsoft Excel format.")
                       ),
-                      box(width = 12, h4("Using the Tool: Inputs"),p("The tool requires that users enter values in at least the Primary Inputs section of the Inputs page. This section includes: Agency (region), % of electricity sales as net revenue, energy mix data, customer electricity rates, and electricity usage. There are a variety of additional inputs that allow users to users add further program specifications as desired. A detailed breakdown of all available input options is included in the User Guide page.")
+                      box(width = 12, h4("Using the Tool: Inputs"),p("The tool requires that users enter values for the agency’s energy mix, customer electricity usage, cost to the customer of electricity from the agency and solar, and some program design specifications. There are a variety of additional fields in the Inputs page that allow users to users add further program specifications as desired. A detailed explanation of all available input options is included in the User Guide page.")
                       ),
-                      box(width = 12, h4("Using the Tool: Results"), p("The tool's primary results are the predicted solar PV uptake caused by solar financing program.  The tool's secondary results are the predicted health, environmental, and monetary impacts associated with the financing program.")
+                      box(width = 12, h4("Using the Tool: Results"), p("The tool's primary results are the predicted solar PV uptake caused by solar financing program.  The tool's secondary results are the predicted greenhouse gase, health, and monetary impacts associated with the financing program.")
                       ))) , 
     tabItem(tabName = "tab_2",
             fluidPage(h3("User Guide"),
-                      box( width = 12, h4("Primary Inputs"),p("These inputs represent the minimum amount of information necessary to run the model. They are:"), 
-                           br(),tags$div(tags$ul(tags$li("Agency: Which CCE Agency will be running the program. The model uses this information to set the correct population level and predict local emissions impacts."), 
-                                                 tags$li("Electricity rate data: These inputs are used to calculate the foregone revenue from CCE agency electricity sales to agency customers who will now be getting electricity generated from their solar panels instead."),
+                      box( width = 12, h4("Basic Information"),p("These inputs are required to run the tool."), 
+                           br(),tags$div(tags$ul(tags$li("Agency: The CCE agency that will run the program. The model uses this information to set the baseline market share, average solar system size, cost of solar, and electricity usage."), 
+                                                 tags$li("Percent Net Revenue: The percentage of electricity sales that goes to revenues."),
                                                  tags$li("Transmission losses (%): the average percentage of electricity supplied by the CCE agency that is lost during transmission."),
-                                                 tags$li("These values specify the composition of the energy mix to calculate the greenhouse gas emissions that are avoided when electricity is sourced from the homeowner’s solar panels rather than agency supply."),  style = "font-size: 13px"))),    
-                      box( width = 12, h4("Program Details"),p("These inputs are the program design parameters required from the user that the tool will use to evaluate the program. We suggest that the user multiple different program designs by varying the parameter values and running the tool module when comparing which programs to implement.
-"), 
-                           br(),tags$div(tags$ul(tags$li("Total budget available for loans ($)"),
-                                                 tags$li("Program costs ($/year)"),
-                                                 tags$li("Revenue percentage from electricity sales (%)"),
-                                                 tags$li("Agency’s discount rate (%)"),
-                                                 tags$li("Agency program financing interest rate (%)"),
-                                                 tags$li("Financing payback period (years)"),
-                                                 tags$li("NEM generator payments ($/kWh)"),
-                                                 tags$li("Average percentage of bill that is net generation (%)"),
-                                                 tags$li("% of solar buyers using program"),  style = "font-size: 13px"))),
-                      box( width = 12, h4("Optional Inputs"), p("The tool provides advanced customizability through additional inputs. These inputs have pre-set default values that can be left as is, if the user so desires. Inputs include:"), 
-                           br(), tags$div(tags$ul(tags$li("Expected default rate (%)"), 
-                                                  tags$li("Rebound effect (%)"), 
-                                                  tags$li("Customer’s discount rate (%)"), 
-                                                  tags$li("Carbon value ($/ton CO2e)"),
+                                                 tags$li("These values specify the composition of the energy mix to calculate the greenhouse gas emissions that are avoided when electricity is sourced from the homeowner’s solar panels rather than agency supply."),  style = "font-size: 13px"))),
+                      box( width = 12, h4("Electricity Rates & Usage"),p("These required inputs affect consumer decisions and are also used to calculate the foregone revenue from CCE agency electricity sales to customers who will get electricity from their solar panels instead of the grid."), p("Rate data:"), 
+                           tags$div(tags$ul(tags$li("Electricity price escalation rate"), 
+                                                 tags$li("Average rate - most common schedule"),
+                                                 tags$li("Average rate - CARE"),
+                                                 tags$li("Average rate - other schedules"),  
+                                                 tags$li("Greener product premium"),style = "font-size: 13px")), 
+                      p("Usage data (non-NEM accounts):"),
+                          tags$div(tags$ul(tags$li("Percentage of non-CARE accounts on most common rate schedule"), 
+                                                tags$li("Percentage of accounts on CARE"),
+                                                tags$li("Percentage of accounts on other rate schedules"),
+                                                tags$li("Percentage of accounts purchasing greener electricity"),   
+                                                tags$li("Average electricity usage - non-Care, non-green"),
+                                                tags$li("Average electricity usage - CARE, non-green"),
+                                                tags$li("Average electricity usage - non-CARE, green"),                       
+                                                tags$li("Average electricity usage - CARE, green"),style = "font-size: 13px"))),
+                      box( width = 12, h4("Energy Mix"),p("These required inputs specify the composition of the energy mix to calculate the effects on anthropogenic and biogenic greenhouse gas and criteria pollutant emissions when electricity is sourced from the homeowner’s solar panels rather than the agency."),  style = "font-size: 13px"),                      
+                      box( width = 12, h4("Program Details"),p("These required inputs are used to calculate consumer uptake and resulting monetary costs and benefits of the program. Some are initially populated with default values that can be altered to match the agency’s needs."), 
+                           tags$div(tags$ul(tags$li("Total budget available for loans"),
+                                                 tags$li("Program administrative costs"),
+                                                 tags$li("Agency’s discount rate"),
+                                                 tags$li("Agency program financing interest rate"),
+                                                 tags$li("Average existing (non-CCE) financing interest rate"),
+                                                 tags$li("Financing payback period"),
+                                                 tags$li("NEM rate credited"),
+                                                 tags$li("If \"Flat Rate\" is chosen, rate"),
+                                                 tags$li("If \"OAS\" is chosen, bonus payment"),
+                                                 tags$li("Credit green premium in NEM?"), style = "font-size: 13px"))),
+                      box( width = 12, h4("Additional Inputs"), p("These optional inputs allow users to add details about factors affecting both consumer decisions and agency cost-benefit calculations, enabling more accurate predictions of consumer uptake and resulting financial implications, greenhouse gas emission reductions, and health impacts. They are initially populated with default values that can be altered to match the agency’s needs."), 
+                           tags$div(tags$ul(tags$li("Expected default rate"), 
+                                                  tags$li("Marketing effectiveness"),
+                                                  tags$li("Rebound effect"), 
+                                                  tags$li("Customer’s discount rate"),
+                                                  tags$li("Societal discount rate"),
+                                                  tags$li("Carbon value"),
                                                   tags$li("Health impact level"), 
+                                                  tags$li("Average PV lifetime"),
                                                   tags$li("PV average capacity factor"),
-                                                  tags$li("PV average operations & maintenance cost ($/kW/yr)"),
-                                                  tags$li("Average existing (non-CCE) financing interest rate (%)"),
-                                                  tags$li("Local rebates ($/kW)"),
-                                                  tags$li("Percentage of accounts that qualify for local rebates (%)", 
+                                                  tags$li("PV average operations & maintenance cost"),
+                                                  tags$li("Average percentage of bill that is net generation"),
+                                                  tags$li("Local rebates"),
+                                                  tags$li("Percentage of accounts that qualify for local rebates",
+                                                  tags$li("Decrease in PV cost per watt since 2016"),
                                                           footer = NULL, status = NULL,solidHeader = FALSE, background = NULL, height = NULL, collapsible = FALSE, collapsed = FALSE)),  style = "font-size: 13px")
                       ))), 
     tabItem(tabName ="tab_3",
             fluidPage(
-              titlePanel("1) Set all inputs in BLUE boxes first. 2) Click Calibrate. 3)Modify Calibration main inputs until calibrated. 4) Go to next page to get results"),
           
-              fluidRow(
-                column(6,box(title = "Calibration main inputs", width=NULL, status = "success", solidHeader = TRUE, collapsible = TRUE,
-                             p("Review the results in the Calibration box after you click Calibrate. To calibrate, increase/decrease each perceived cost such that the difference between the Actual Marketshare and Estimated Marketshare are within 0.02 for every category: CCE, PVOwn, 3rdOwn. This is a trial-and-error process, and may take 5-10 tries to achieve adequate calibration."),p(" For future use without calibration, remember these perceived costs values."),br(),
-                             selectInput(inputId="Agency", "Agency (region)",
-                                         choices = list("Apple Valley Choice Energy" = "Apple Valley", "Clean Power SF" = "San Francisco", "Lancaster Choice Energy" = "Lancaster", "MCE Clean Energy" ="MCE", "Peninsula Clean Energy"="Peninsula", "Redwood Coast Energy Authority"="Redwood Coast", "Silicon Valley Clean Energy"="Silicon Valley", "Sonoma Clean Power"="Sonoma"), selected = "MCE")%>%
-                               shinyInput_label_embed(
-                                 shiny_iconlink() %>%
-                                   bs_embed_tooltip(
-                                     title = "Which CCE agency will be running the program. The model uses this information to set the correct population level and determine the number of suitable homes for solar PV installation.
-                                     ", placement = "right")), 
-                  numericInput(inputId ="PerceivedOwn", "Perceived cost per month for owning solar PV($)", value = 120)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "If Actual Marketshare of PVOwn is higher than Estimated Marketshare decrease this value by several units.",  placement = "right")),
-                  numericInput(inputId ="Perceived3rd", "Perceived cost per month for owning 3rd party owned solar PV ($)", value = 126)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "If Actual Marketshare of 3rdOwn is higher than Estimated Marketshare decrease this value by several units.",  placement = "right"))
+              fluidRow(h2("Instruction:"), h3("1) Set all inputs in blue boxes below."), h3("2) Calibrate as directed in Calibration box."),h3("3) Once satisfied with calibration, proceed to Results page."),br(),
+                column(12,box(title = "Calibration", width=NULL, status = "success", solidHeader = TRUE, collapsible = TRUE,
+                             p("Do this step after you enter values in the blue input boxes below. To calibrate the tool:"),
+p("1)	Click the Calibrate button once and wait 10-30 seconds for results to appear in the Calibration Results box."),
+p("2)	If observed market share is HIGHER than the predicted market share in the CO and/or TPO column(s), DECREASE the respective CO and/or TPO perceived cost in the entry fields below. If the observed market share is LOWER than the predicted market share, INCREASE the perceived costs."),
+p("3)	Repeat steps 1) and 2) until the differences between the observed and predicted market shares in the Calibration Results box are under 0.02 for both customer-owned (CO) and third party-owned (TPO) solar PV. This is a trial-and-error process, and may take 5-10 tries."),
+p("4)	Proceed to the Results page"),
+p(" For future use without calibration, record these perceived cost values elsewhere. Recalibrate if you change any of the following inputs: Agency, Electricity Rates & Usage, Average existing (non-CCE) financing interest rate, any NEM-related inputs, Customer’s Discount Rate, or the last seven Additional Details inputs."),br(),
+                             
+                  numericInput(inputId ="PerceivedOwn", "Perceived cost per month for owning solar PV($)", value = 120)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "If Actual Marketshare of PVOwn is higher than Estimated Marketshare decrease this value by several units.",  placement = "left")),
+                  numericInput(inputId ="Perceived3rd", "Perceived cost per month for owning 3rd party owned solar PV ($)", value = 126)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "If Actual Marketshare of 3rdOwn is higher than Estimated Marketshare decrease this value by several units.",  placement = "left")),actionButton("go2", "Calibrate"),br(),tableOutput("table3")
                   
-                  )),column(6,box(title = "Calibration", width=NULL, status = "success", solidHeader = TRUE, collapsible = TRUE,p("Once you have clicked Calibrate, WAIT 10-30 seconds for results to appear at the bottom of this box. Your goal is to get the CCE Actual Marketshare and CCE Estimated Marketshare to match within 0.02 of each other."),p("If CCE Actual Marketshare is HIGHER than Estimated, DECREASE the perceived cost of owning solar and/or perceived cost of 3rd party owned solar. If CCE Actual Marketshare is LOWER than Estimated, INCREASE the perceived costs."),p("When the difference between the Actual Marketshare and Estimated Marketshare are within 0.02 for every category, you are good to go. Proceed to Results page.") , actionButton("go2", "Calibrate"),br(),tableOutput("table3")
-                                  
-                                  ))), 
+                  )),column(6)), 
               fluidRow(
               column(3,
                      box(title = "CCE Agency Basic Information Inputs",width=NULL, status = "primary", solidHeader = TRUE, collapsible = TRUE, 
+                         selectInput(inputId="Agency", "Agency (region)",
+                                     choices = list("Apple Valley Choice Energy" = "Apple Valley", "CleanPowerSF" = "San Francisco", "Lancaster Choice Energy" = "Lancaster", "MCE Clean Energy" ="MCE", "Peninsula Clean Energy"="Peninsula", "Redwood Coast Energy Authority"="Redwood Coast", "Silicon Valley Clean Energy"="Silicon Valley", "Sonoma Clean Power"="Sonoma"), selected = "MCE")%>%
+                           shinyInput_label_embed(
+                             shiny_iconlink() %>%
+                               bs_embed_tooltip(
+                                 title = "Which CCE agency will be running the program. The model uses this information to set the correct population level and determine the number of suitable homes for solar PV installation.
+                                 ", placement = "right")),
                      numericInput(inputId ="rev_perc", "Percentage of electricity sales received as revenue(%)", value = 10)%>% shinyInput_label_embed( shiny_iconlink() %>% bs_embed_tooltip(title = "The % revenue from electricity sales that results in net revenue",  placement = "right")),
                     numericInput(inputId ="Trans", "Transmission Losses (%)", value = 4.2)%>% shinyInput_label_embed(
                       shiny_iconlink() %>%
@@ -207,13 +230,13 @@ ui <-  dashboardPage(
 )) #fluid page
     ),
 tabItem(tabName = "tab_4",
-        fluidPage(h3("To see the results, click [Calculate] button here >> ", actionButton("go", "Calculate")),
+        fluidPage(h3("To see results, click Calculate button >>", actionButton("go", "Calculate")),
                       fluidRow(
                         column(6, 
-                               box(title = "The Estimated Number of Solar Uptakes", width=12, status = "primary", solidHeader = TRUE, collapsible = TRUE, tableOutput("table1")),
-                               box(title = "Total Benefits and Costs", width=12, status = "success", solidHeader = TRUE, collapsible = TRUE, tableOutput("table2"))),
+                               box(title = "Total and Program-Caused Solar Installation Predictions", width=12, status = "primary", solidHeader = TRUE, collapsible = TRUE, tableOutput("table1")),
+                               box(title = "Program-Caused Installations Benefits and Costs", width=12, status = "success", solidHeader = TRUE, collapsible = TRUE, tableOutput("table2"))),
                         column(6,
-                               box(title = "The Estimated Number of Solar Uptakes", width=12, status = "primary", solidHeader = TRUE, collapsible = TRUE,plotOutput("plot1")))
+                               box(title = "Total and Program-Caused Solar Installation Predictions", width=12, status = "primary", solidHeader = TRUE, collapsible = TRUE,plotOutput("plot1")))
                         
                   )))
 
@@ -354,7 +377,7 @@ server <- function(input, output) {
       Marketshare_Table <- (Marketshare_List[match(agency,Marketshare_List$Agency),2:4])
       Marketshare_Table[2,] <- Marketshare[1,]
       Marketshare_Table[3,] <- ((Marketshare_Table[2,]-Marketshare_Table[1,])*100)^2
-      rownames(Marketshare_Table)<- c("Actual Marketshare","Estimated Marketshare from Model","The difference between Actual Marketshare and Model")
+      rownames(Marketshare_Table)<- c("Observed baseline market share","Predicted baseline market share","The difference between observed and predicted market shares")
       return(Marketshare_Table)
     }
   
@@ -554,8 +577,13 @@ server <- function(input, output) {
     
     Average_Gen <- mean(Data_matrix[Data_matrix[,27]==3,2])*12
     Energymix <- matrix(c(mix1,mix2,mix3,mix4,mix5,mix6,mix7,mix8,mix9,mix10)/100, ncol=10)
+
     Emission <- as.matrix(Emission)
-    Emission_Factor <- Energymix %*% Emission
+    Emission_total <- Energymix %*% Emission
+    Biogenic <- Energymix[1,6]*Emission[6,]
+    Emission_Factor <- Emission_total-Biogenic
+    
+    
     Degrade_matrix <- matrix(rep(NA,Lifetime*2),ncol=2)
     Degrade_matrix[1,1] <- 1
     Degrade_matrix[2,1] <- 1-0.02
@@ -570,6 +598,10 @@ server <- function(input, output) {
     Aggreated_degradation <- sum(Degrade_matrix[,1])
     
     Lifetime_Emission_Reduction <- as.matrix(Emission_Factor[1,]*Aggreated_degradation*Final_uptakes_caused*Average_Gen/1000*(1+Trans/100)/(1+Rebound/100))
+    Lifetime_Emission_Reduction_Biogenic <- as.matrix(Biogenic*Aggreated_degradation*Final_uptakes_caused*Average_Gen/1000*(1+Trans/100)/(1+Rebound/100))
+    Biogenic_emission <-Lifetime_Emission_Reduction_Biogenic[1,]
+    
+    
     Health_factor <- subset(Health,Health$Level==Impact)
     E_Reduced <- Lifetime_Emission_Reduction[2:5,]
     Health_Benefit <- matrix(rep(NA,4),ncol=4)
@@ -593,8 +625,8 @@ server <- function(input, output) {
     GHG_reduction_value <- GHG_reduction*Carbon_p
     
     
-    FinalTable <- matrix(c(Final_uptakes_caused,Final_uptakes,Loan_provided, Budget_remained ,Revenue_lost, Collected_revenue, Revenue_change, GHG_reduction,GHG_cost,GHG_reduction_value,Total_health_benefit), nrow=11, ncol=1)
-    rownames(FinalTable)<-c("Solar uptakes caused by program", "Total solar uptakes","Total value of loans provided ($)","Program budget remaining ($)","Revenue lost due to PV uptakes ($)","Revenue from collected principal and interest ($)","Total revenue change due to program ($)", "GHG emission averted (tons)","Cost per ton of GHG emission reduction ($/ton CO2e)","Societal value of GHG emission reductions ($)","Health improvements ($)")
+    FinalTable <- matrix(c(Final_uptakes_caused,Final_uptakes,Loan_provided, Budget_remained ,Revenue_lost, Collected_revenue, Revenue_change, GHG_reduction,Biogenic_emission, GHG_cost,GHG_reduction_value,Total_health_benefit), nrow=12, ncol=1)
+    rownames(FinalTable)<-c("Solar Installations Caused by Program", "Total Solar Installations","Total value of loans provided ($)","Program budget remaining ($)","Electricity sales revenue lost due to program ($)","Revenue from collected principal and interest ($)","Total revenue change due to program ($)", "Anthropogenic GHG emission reduction (tons)","Biogenic GHG emission reduction (tons)","Cost of GHG emission reduction ($/ton CO2e)","Societal value of GHG emission reductions ($)","Health benefits ($)")
     colnames(FinalTable)<-c("Estimated Results")
     print(FinalTable)
     
@@ -613,14 +645,14 @@ server <- function(input, output) {
     Finalsale[,3] <- Finalsale[,2]-Finalsale[,1]
     Finalsale[,4] <- Finalsale[,1]
     Final <- as.data.frame(Finalsale[1,3:4])
-    colnames(Final) <-c("Total Uptakes","Caused by Program")
+    colnames(Final) <-c("Remaining_Installations_Using_Program","Installations_Caused_by_Program")
     DF <- data.frame(Final)
-    DF$Type <- "Solar Uptakes"
+    DF$Type <- ""
     DF1 <- melt(DF, id.var="Type")
     library(ggplot2)
     ggplot(DF1, aes(x = Type, y = value, fill = variable)) + 
       geom_bar(stat = "identity", width = 0.5)+
-      ylab("Solar PV Installation")+
+      ylab("Solar PV Installations (#)")+
       xlab("")+
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
             panel.background = element_blank(), axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5), legend.title=element_blank(),text=element_text(size=15))
@@ -633,12 +665,17 @@ server <- function(input, output) {
   
   output$table2 <- renderTable({ 
     TCM <- TCM()
-    Cost_Benfit <- as.data.frame(TCM[3:11,1])
+    Cost_Benfit <- as.data.frame(TCM[3:12,1])
   },rownames = TRUE, colnames=FALSE, digits=0)
   
   
   output$table3 <- renderTable({ 
     P_value <- Calibrate()
+    P_value_final <- P_value[1:3,2:3]
+    rownames(P_value_final) <-c("Observed baseline market share","Predicted baseline market share", "Difference between observed and predicted market shares")
+    colnames(P_value_final) <-c("CO","TPO")
+    P_final <- P_value_final
+    
   },rownames = TRUE, colnames=TRUE, digits=4)
   
 

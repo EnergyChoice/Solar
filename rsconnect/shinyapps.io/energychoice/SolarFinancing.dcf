@@ -5,8 +5,8 @@ account: energychoice
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 347973
-bundleId: 1411881
+bundleId: 1428808
 url: https://energychoice.shinyapps.io/SolarFinancing/
-when: 1528179947.28163
+when: 1528957996.45005
 asMultiple: FALSE
 asStatic: FALSE
